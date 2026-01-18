@@ -18,7 +18,7 @@
     <ac>15</ac>
   </item>
   <item>
-    <name>Пробуждёная фокусировка, затронутая драконом / Wakened Dragon-Touched Focus</name>
+    <name>Пробуждёная фокусировка, затронутая дракономWakened Dragon-Touched Focus</name>
     <detail>veryRare</detail>
     <type>G</type>
     <magic>YES</magic>
@@ -108,6 +108,7 @@
     <source>BGG</source>
     <weight>4.0</weight>
     <dmg1>1d6+1</dmg1>
+    <dmg2>1d8+1</dmg2>
     <dmgType>B</dmgType>
     <property>V,M</property>
   </item>
@@ -217,6 +218,7 @@
     <source>FTD</source>
     <weight>4.0</weight>
     <dmg1>1d6+2</dmg1>
+    <dmg2>1d8+2</dmg2>
     <dmgType>B</dmgType>
     <property>V,M</property>
   </item>
@@ -228,6 +230,7 @@
     <weight>3.0</weight>
     <value>15.0</value>
     <dmg1>1d8</dmg1>
+    <dmg2>1d10</dmg2>
     <dmgType>S</dmgType>
     <property>V</property>
   </item>
@@ -242,6 +245,7 @@
     <source>FTD</source>
     <weight>2.0</weight>
     <dmg1>1d8+1</dmg1>
+    <dmg2>1d10+1</dmg2>
     <dmgType>B</dmgType>
     <property>V,M</property>
   </item>
@@ -1403,6 +1407,7 @@
     <weight>3.0</weight>
     <value>16000.0</value>
     <dmg1>1d6+3</dmg1>
+    <dmg2>1d8+3</dmg2>
     <dmgType>P</dmgType>
     <property>T,V,M</property>
     <range>20/60</range>
@@ -1636,6 +1641,7 @@
     <weight>4.0</weight>
     <value>4000.0</value>
     <dmg1>1d6+2</dmg1>
+    <dmg2>1d8+2</dmg2>
     <dmgType>B</dmgType>
     <property>V,M</property>
   </item>
@@ -1759,6 +1765,7 @@
     <weight>2.0</weight>
     <value>1000.0</value>
     <dmg1>1d8+1</dmg1>
+    <dmg2>1d10+1</dmg2>
     <dmgType>B</dmgType>
     <property>V,M</property>
   </item>
@@ -1855,6 +1862,7 @@
     <source>FTD</source>
     <weight>4.0</weight>
     <dmg1>1d6+1</dmg1>
+    <dmg2>1d8+1</dmg2>
     <dmgType>P</dmgType>
     <property>T,V,M</property>
     <range>20/60</range>
@@ -1895,6 +1903,7 @@
     <source>FTD</source>
     <weight>3.0</weight>
     <dmg1>1d6+1</dmg1>
+    <dmg2>1d8+1</dmg2>
     <dmgType>P</dmgType>
     <property>T,V,M</property>
     <range>20/60</range>
@@ -2434,6 +2443,7 @@
     <weight>3.0</weight>
     <value>501.0</value>
     <dmg1>1d6</dmg1>
+    <dmg2>1d8</dmg2>
     <dmgType>P</dmgType>
     <property>T,V</property>
     <range>20/60</range>
@@ -2465,6 +2475,7 @@
     <weight>4.0</weight>
     <value>16000.0</value>
     <dmg1>1d6+3</dmg1>
+    <dmg2>1d8+3</dmg2>
     <dmgType>B</dmgType>
     <property>V,M</property>
   </item>
@@ -2598,6 +2609,7 @@
     <source>FTD</source>
     <weight>3.0</weight>
     <dmg1>1d6+1</dmg1>
+    <dmg2>1d8+1</dmg2>
     <dmgType>P</dmgType>
     <property>T,V,M</property>
     <range>20/60</range>
@@ -3431,6 +3443,7 @@
     <source>FTD</source>
     <weight>4.0</weight>
     <dmg1>1d8+1</dmg1>
+    <dmg2>1d10+1</dmg2>
     <dmgType>S</dmgType>
     <property>V,M</property>
   </item>
@@ -3566,6 +3579,7 @@
     <weight>4.0</weight>
     <value>4000.0</value>
     <dmg1>1d6+2</dmg1>
+    <dmg2>1d8+2</dmg2>
     <dmgType>P</dmgType>
     <property>T,V,M</property>
     <range>20/60</range>
@@ -3589,6 +3603,7 @@
     <source>BGG</source>
     <weight>3.0</weight>
     <dmg1>1d8+1</dmg1>
+    <dmg2>1d10+1</dmg2>
     <dmgType>S</dmgType>
     <property>V,M</property>
   </item>
@@ -3619,6 +3634,7 @@
     <weight>2.0</weight>
     <value>15.0</value>
     <dmg1>1d8</dmg1>
+    <dmg2>1d10</dmg2>
     <dmgType>B</dmgType>
     <property>V</property>
   </item>
@@ -3645,6 +3661,7 @@
     <weight>4.0</weight>
     <value>5.0</value>
     <dmg1>1d6</dmg1>
+    <dmg2>1d8</dmg2>
     <dmgType>P</dmgType>
     <property>T,V</property>
     <range>20/60</range>
@@ -4176,6 +4193,7 @@
     <weight>3.0</weight>
     <value>515.0</value>
     <dmg1>1d8</dmg1>
+    <dmg2>1d10</dmg2>
     <dmgType>S</dmgType>
     <property>V</property>
   </item>
@@ -4195,6 +4213,7 @@
     <weight>3.0</weight>
     <value>16000.0</value>
     <dmg1>1d8+3</dmg1>
+    <dmg2>1d10+3</dmg2>
     <dmgType>S</dmgType>
     <property>V,M</property>
   </item>
@@ -4304,6 +4323,7 @@
     <weight>3.0</weight>
     <value>4000.0</value>
     <dmg1>1d6+2</dmg1>
+    <dmg2>1d8+2</dmg2>
     <dmgType>P</dmgType>
     <property>T,V,M</property>
     <range>20/60</range>
@@ -4448,6 +4468,7 @@
     <weight>4.0</weight>
     <value>10.0</value>
     <dmg1>1d8</dmg1>
+    <dmg2>1d10</dmg2>
     <dmgType>S</dmgType>
     <property>V</property>
   </item>
@@ -4527,6 +4548,7 @@
     <weight>3.0</weight>
     <value>1000.0</value>
     <dmg1>1d8+1</dmg1>
+    <dmg2>1d10+1</dmg2>
     <dmgType>S</dmgType>
     <property>V,M</property>
   </item>
@@ -4699,6 +4721,7 @@
     <source>XGE</source>
     <weight>4.0</weight>
     <dmg1>1d6</dmg1>
+    <dmg2>1d8</dmg2>
     <dmgType>B</dmgType>
     <property>V,M</property>
   </item>
@@ -4765,6 +4788,7 @@
     <source>FTD</source>
     <weight>3.0</weight>
     <dmg1>1d8+1</dmg1>
+    <dmg2>1d10+1</dmg2>
     <dmgType>S</dmgType>
     <property>V,M</property>
   </item>
@@ -4851,6 +4875,7 @@
     <source>FTD</source>
     <weight>2.0</weight>
     <dmg1>1d8+3</dmg1>
+    <dmg2>1d10+3</dmg2>
     <dmgType>B</dmgType>
     <property>V,M</property>
   </item>
@@ -5117,6 +5142,7 @@
     <weight>2.0</weight>
     <value>4000.0</value>
     <dmg1>1d8+2</dmg1>
+    <dmg2>1d10+2</dmg2>
     <dmgType>B</dmgType>
     <property>V,M</property>
   </item>
@@ -5139,6 +5165,7 @@
     <source>FTD</source>
     <weight>4.0</weight>
     <dmg1>1d6+1</dmg1>
+    <dmg2>1d8+1</dmg2>
     <dmgType>P</dmgType>
     <property>T,V,M</property>
     <range>20/60</range>
@@ -6090,6 +6117,7 @@
     <weight>3.0</weight>
     <value>1.0</value>
     <dmg1>1d6</dmg1>
+    <dmg2>1d8</dmg2>
     <dmgType>P</dmgType>
     <property>T,V</property>
     <range>20/60</range>
@@ -6218,6 +6246,7 @@
     <weight>4.0</weight>
     <value>505.0</value>
     <dmg1>1d6</dmg1>
+    <dmg2>1d8</dmg2>
     <dmgType>P</dmgType>
     <property>T,V</property>
     <range>20/60</range>
@@ -7160,6 +7189,7 @@
     <source>FTD</source>
     <weight>4.0</weight>
     <dmg1>1d8+2</dmg1>
+    <dmg2>1d10+2</dmg2>
     <dmgType>S</dmgType>
     <property>V,M</property>
   </item>
@@ -7390,6 +7420,7 @@
     <weight>4.0</weight>
     <value>350.0</value>
     <dmg1>1d6</dmg1>
+    <dmg2>1d8</dmg2>
     <dmgType>P</dmgType>
     <property>T,V,M</property>
     <range>20/60</range>
@@ -7557,6 +7588,7 @@
     <weight>4.0</weight>
     <value>1000.0</value>
     <dmg1>1d8+1</dmg1>
+    <dmg2>1d10+1</dmg2>
     <dmgType>S</dmgType>
     <property>V,M</property>
   </item>
@@ -7754,6 +7786,7 @@
     <source>FTD</source>
     <weight>4.0</weight>
     <dmg1>1d8+3</dmg1>
+    <dmg2>1d10+3</dmg2>
     <dmgType>S</dmgType>
     <property>V,M</property>
   </item>
@@ -7822,6 +7855,7 @@
     <source>FTD</source>
     <weight>3.0</weight>
     <dmg1>1d8+1</dmg1>
+    <dmg2>1d10+1</dmg2>
     <dmgType>S</dmgType>
     <property>V,M</property>
   </item>
@@ -8154,6 +8188,7 @@
     <weight>3.0</weight>
     <value>1000.0</value>
     <dmg1>1d6+1</dmg1>
+    <dmg2>1d8+1</dmg2>
     <dmgType>P</dmgType>
     <property>T,V,M</property>
     <range>20/60</range>
@@ -8301,6 +8336,7 @@
     <source>XGE</source>
     <weight>3.0</weight>
     <dmg1>1d8</dmg1>
+    <dmg2>1d10</dmg2>
     <dmgType>S</dmgType>
     <property>V,M</property>
   </item>
@@ -8931,6 +8967,7 @@
     <weight>4.0</weight>
     <value>350.0</value>
     <dmg1>1d6</dmg1>
+    <dmg2>1d8</dmg2>
     <dmgType>B</dmgType>
     <property>V,M</property>
   </item>
@@ -8947,6 +8984,7 @@
     <source>FTD</source>
     <weight>3.0</weight>
     <dmg1>1d8</dmg1>
+    <dmg2>1d10</dmg2>
     <dmgType>S</dmgType>
     <property>V,M</property>
   </item>
@@ -8961,6 +8999,7 @@
     <source>XGE</source>
     <weight>4.0</weight>
     <dmg1>1d6</dmg1>
+    <dmg2>1d8</dmg2>
     <dmgType>B</dmgType>
     <property>V,M</property>
   </item>
@@ -9221,6 +9260,7 @@
     <source>FTD</source>
     <weight>4.0</weight>
     <dmg1>1d8+1</dmg1>
+    <dmg2>1d10+1</dmg2>
     <dmgType>S</dmgType>
     <property>V,M</property>
   </item>
@@ -9883,6 +9923,7 @@
     <weight>3.0</weight>
     <value>4000.0</value>
     <dmg1>1d8+2</dmg1>
+    <dmg2>1d10+2</dmg2>
     <dmgType>S</dmgType>
     <property>V,M</property>
   </item>
@@ -9905,6 +9946,7 @@
     <source>FTD</source>
     <weight>4.0</weight>
     <dmg1>1d6+1</dmg1>
+    <dmg2>1d8+1</dmg2>
     <dmgType>B</dmgType>
     <property>V,M</property>
   </item>
@@ -9960,6 +10002,7 @@
     <weight>4.0</weight>
     <value>4000.0</value>
     <dmg1>1d8+2</dmg1>
+    <dmg2>1d10+2</dmg2>
     <dmgType>S</dmgType>
     <property>V,M</property>
   </item>
@@ -9976,6 +10019,7 @@
     <source>FTD</source>
     <weight>4.0</weight>
     <dmg1>1d6+1</dmg1>
+    <dmg2>1d8+1</dmg2>
     <dmgType>B</dmgType>
     <property>V,M</property>
   </item>
@@ -10334,6 +10378,7 @@
     <weight>3.0</weight>
     <value>350.0</value>
     <dmg1>1d6</dmg1>
+    <dmg2>1d8</dmg2>
     <dmgType>P</dmgType>
     <property>T,V,M</property>
     <range>20/60</range>
@@ -10720,6 +10765,7 @@
     <weight>4.0</weight>
     <value>5.0</value>
     <dmg1>1d6</dmg1>
+    <dmg2>1d8</dmg2>
     <dmgType>B</dmgType>
     <property>V,M</property>
   </item>
@@ -11235,6 +11281,7 @@
     <weight>4.0</weight>
     <value>2.0</value>
     <dmg1>1d6</dmg1>
+    <dmg2>1d8</dmg2>
     <dmgType>B</dmgType>
     <property>V</property>
   </item>
@@ -11326,6 +11373,7 @@
     <source>TCE</source>
     <weight>4.0</weight>
     <dmg1>1d6+3</dmg1>
+    <dmg2>1d8+3</dmg2>
     <dmgType>B</dmgType>
     <property>V,M</property>
   </item>
@@ -11463,6 +11511,7 @@
     <source>FTD</source>
     <weight>4.0</weight>
     <dmg1>1d6+3</dmg1>
+    <dmg2>1d8+3</dmg2>
     <dmgType>B</dmgType>
     <property>V,M</property>
   </item>
@@ -11639,6 +11688,7 @@
     <source>FTD</source>
     <weight>2.0</weight>
     <dmg1>1d8+1</dmg1>
+    <dmg2>1d10+1</dmg2>
     <dmgType>B</dmgType>
     <property>V,M</property>
   </item>
@@ -11761,6 +11811,7 @@
     <weight>2.0</weight>
     <value>515.0</value>
     <dmg1>1d8</dmg1>
+    <dmg2>1d10</dmg2>
     <dmgType>B</dmgType>
     <property>V</property>
   </item>
@@ -11908,6 +11959,7 @@
     <source>FTD</source>
     <weight>3.0</weight>
     <dmg1>1d6+3</dmg1>
+    <dmg2>1d8+3</dmg2>
     <dmgType>P</dmgType>
     <property>T,V,M</property>
     <range>20/60</range>
@@ -12012,6 +12064,7 @@
     <weight>4.0</weight>
     <value>510.0</value>
     <dmg1>1d8</dmg1>
+    <dmg2>1d10</dmg2>
     <dmgType>S</dmgType>
     <property>V</property>
   </item>
@@ -12456,6 +12509,7 @@
     <weight>4.0</weight>
     <value>16000.0</value>
     <dmg1>1d8+3</dmg1>
+    <dmg2>1d10+3</dmg2>
     <dmgType>S</dmgType>
     <property>V,M</property>
   </item>
@@ -12553,6 +12607,7 @@
     <source>FTD</source>
     <weight>4.0</weight>
     <dmg1>1d6+3</dmg1>
+    <dmg2>1d8+3</dmg2>
     <dmgType>P</dmgType>
     <property>T,V,M</property>
     <range>20/60</range>
@@ -12615,6 +12670,7 @@
     <source>FTD</source>
     <weight>2.0</weight>
     <dmg1>1d8+2</dmg1>
+    <dmg2>1d10+2</dmg2>
     <dmgType>B</dmgType>
     <property>V,M</property>
   </item>
@@ -13695,6 +13751,7 @@
     <weight>3.0</weight>
     <value>350.0</value>
     <dmg1>1d8</dmg1>
+    <dmg2>1d10</dmg2>
     <dmgType>S</dmgType>
     <property>V,M</property>
   </item>
@@ -13724,6 +13781,7 @@
     <source>FTD</source>
     <weight>3.0</weight>
     <dmg1>1d8+3</dmg1>
+    <dmg2>1d10+3</dmg2>
     <dmgType>S</dmgType>
     <property>V,M</property>
   </item>
@@ -13980,6 +14038,7 @@
     <source>BGG</source>
     <weight>3.0</weight>
     <dmg1>1d6+3</dmg1>
+    <dmg2>1d8+3</dmg2>
     <dmgType>P</dmgType>
     <property>T,V,M</property>
     <range>20/60</range>
@@ -14134,6 +14193,7 @@
     <source>XGE</source>
     <weight>4.0</weight>
     <dmg1>1d6</dmg1>
+    <dmg2>1d8</dmg2>
     <dmgType>B</dmgType>
     <property>V,M</property>
   </item>
@@ -14588,6 +14648,7 @@
     <weight>2.0</weight>
     <value>16000.0</value>
     <dmg1>1d8+3</dmg1>
+    <dmg2>1d10+3</dmg2>
     <dmgType>B</dmgType>
     <property>V,M</property>
   </item>
@@ -14746,6 +14807,7 @@
     <weight>4.0</weight>
     <value>1000.0</value>
     <dmg1>1d6+1</dmg1>
+    <dmg2>1d8+1</dmg2>
     <dmgType>B</dmgType>
     <property>V,M</property>
   </item>
@@ -15078,6 +15140,7 @@
     <source>FTD</source>
     <weight>3.0</weight>
     <dmg1>1d8+2</dmg1>
+    <dmg2>1d10+2</dmg2>
     <dmgType>S</dmgType>
     <property>V,M</property>
   </item>
@@ -15130,6 +15193,7 @@
     <source>FTD</source>
     <weight>4.0</weight>
     <dmg1>1d6+2</dmg1>
+    <dmg2>1d8+2</dmg2>
     <dmgType>P</dmgType>
     <property>T,V,M</property>
     <range>20/60</range>
@@ -15276,6 +15340,7 @@
     <weight>4.0</weight>
     <value>1000.0</value>
     <dmg1>1d6+1</dmg1>
+    <dmg2>1d8+1</dmg2>
     <dmgType>P</dmgType>
     <property>T,V,M</property>
     <range>20/60</range>
@@ -16016,6 +16081,7 @@
     <weight>4.0</weight>
     <value>16000.0</value>
     <dmg1>1d6+3</dmg1>
+    <dmg2>1d8+3</dmg2>
     <dmgType>P</dmgType>
     <property>T,V,M</property>
     <range>20/60</range>
@@ -16163,6 +16229,7 @@
     <source>FTD</source>
     <weight>3.0</weight>
     <dmg1>1d6+2</dmg1>
+    <dmg2>1d8+2</dmg2>
     <dmgType>P</dmgType>
     <property>T,V,M</property>
     <range>20/60</range>
@@ -16255,6 +16322,7 @@
     <weight>4.0</weight>
     <value>500.2</value>
     <dmg1>1d6</dmg1>
+    <dmg2>1d8</dmg2>
     <dmgType>B</dmgType>
     <property>V</property>
   </item>
