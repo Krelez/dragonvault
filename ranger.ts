@@ -1,0 +1,803 @@
+
+import { ClassData, FightingStyle, LocalizedString } from '../../types';
+import { f, sc } from '../dataHelpers';
+import { FIGHTER_STYLES } from './common';
+
+// Filter Fighting Styles available to Ranger and add specific ones
+export const RANGER_STYLES: FightingStyle[] = [
+    ...FIGHTER_STYLES.filter(s => ['archery', 'defense', 'dueling', 'two_weapon_fighting', 'blind_fighting', 'thrown_weapon_fighting'].includes(s.id)),
+    { 
+        id: 'druidic_warrior', 
+        name: { en: 'Druidic Warrior', ru: 'Воин-друид' }, 
+        description: { en: 'You learn two cantrips of your choice from the Druid spell list. They count as ranger spells for you, and Wisdom is your spellcasting ability for them.', ru: 'Вы изучаете два заговора на свой выбор из списка заклинаний друида. Для вас они считаются заклинаниями следопыта, и Мудрость является вашей базовой характеристикой для них.' },
+        contentSource: 'TCE'
+    }
+];
+
+export const HUNTER_OPTIONS = {
+    prey: [
+        { id: 'colossus_slayer', name: { en: 'Colossus Slayer', ru: 'Убийца колоссов' }, description: { en: 'Your tenacity can wear down the most potent foes. When you hit a creature with a weapon attack, the creature takes an extra 1d8 damage if it’s below its hit point maximum. You can deal this extra damage only once per turn.', ru: 'Ваше упорство может повергнуть самых мощных врагов. Если вы попадаете по существу атакой оружием, это существо получает дополнительный урон 1к8, если его хиты уже ниже максимума. Вы можете причинить этот дополнительный урон только один раз в ход.' } },
+        { id: 'giant_killer', name: { en: 'Giant Killer', ru: 'Убийца великанов' }, description: { en: 'When a Large or larger creature within 5 feet of you hits or misses you with an attack, you can use your reaction to attack that creature immediately after its attack, provided that you can see the creature.', ru: 'Если Большое или еще большее существо в пределах 5 футов попадает или промахивается по вам атакой, вы можете реакцией атаковать это существо сразу после его атаки, при условии, что вы можете видеть его.' } },
+        { id: 'horde_breaker', name: { en: 'Horde Breaker', ru: 'Сокрушитель орд' }, description: { en: 'Once on each of your turns when you make a weapon attack, you can make another attack with the same weapon against a different creature that is within 5 feet of the original target and within range of your weapon.', ru: 'Один раз в каждый свой ход, когда вы совершаете атаку оружием, вы можете совершить еще одну атаку тем же оружием по другому существу, находящемуся в пределах 5 футов от первичной цели, и находящемуся в пределах досягаемости вашего оружия.' } }
+    ],
+    tactics: [
+        { id: 'escape_the_horde', name: { en: 'Escape the Horde', ru: 'Побег от орды' }, description: { en: 'Opportunity attacks against you are made with disadvantage.', ru: 'Провоцированные атаки по вам совершаются с помехой.' } },
+        { id: 'multiattack_defense', name: { en: 'Multiattack Defense', ru: 'Защита от мультиатаки' }, description: { en: 'When a creature hits you with an attack, you gain a +4 bonus to AC against all subsequent attacks made by that creature for the rest of the turn.', ru: 'Если существо попадает по вам атакой, вы получаете бонус +4 к КД против всех последующих атак этого существа до конца хода.' } },
+        { id: 'steel_will', name: { en: 'Steel Will', ru: 'Стальная воля' }, description: { en: 'You have advantage on saving throws against being frightened.', ru: 'Вы совершаете с преимуществом спасброски от испуга.' } }
+    ],
+    multiattack: [
+        { id: 'volley', name: { en: 'Volley', ru: 'Залп' }, description: { en: 'You can use your action to make a ranged attack against any number of creatures within 10 feet of a point you can see within your weapon’s range. You must have ammunition for each target, as normal, and you make a separate attack roll for each target.', ru: 'Вы можете действием совершить дальнобойные атаки по любому количеству видимых вами существ, находящихся в пределах 10 футов от одной точки, и находящихся в пределах дистанции вашего оружия. У вас должны быть боеприпасы для каждой атаки, как обычно, и вы должны совершить отдельный бросок атаки для каждой цели.' } },
+        { id: 'whirlwind', name: { en: 'Whirlwind Attack', ru: 'Вихревая атака' }, description: { en: 'You can use your action to make a melee attack against any number of creatures within 5 feet of you, with a separate attack roll for each target.', ru: 'Вы можете действием совершить рукопашные атаки по любому количеству существ в пределах 5 футов от себя, совершая отдельный бросок атаки по каждой цели.' } }
+    ],
+    defense: [
+        { id: 'evasion', name: { en: 'Evasion', ru: 'Увёртливость' }, description: { en: 'When you are subjected to an effect, such as a red dragon’s fiery breath or a lightning bolt spell, that allows you to make a Dexterity saving throw to take only half damage, you instead take no damage if you succeed on the saving throw, and only half damage if you fail.', ru: 'Вы можете проворно уворачиваться от некоторых зональных эффектов. Если вы подвергаетесь эффекту, позволяющему совершить спасбросок Ловкости, чтобы получить только половину урона, вы вместо этого не получаете урона при успешном спасброске, или получаете лишь половину, если спасбросок был неудачен.' } },
+        { id: 'stand_against_tide', name: { en: 'Stand Against the Tide', ru: 'Стоять против течения' }, description: { en: 'When a hostile creature misses you with a melee attack, you can use your reaction to force that creature to repeat the same attack against another creature (other than itself) of your choice.', ru: 'Если враждебное существо промахивается по вам рукопашной атакой, вы можете реакцией заставить его повторить эту атаку по другому существу (кроме него самого) на ваш выбор.' } },
+        { id: 'uncanny_dodge', name: { en: 'Uncanny Dodge', ru: 'Невероятное уклонение' }, description: { en: 'When an attacker that you can see hits you with an attack, you can use your reaction to halve the attack’s damage against you.', ru: 'Когда нападающий, которого вы видите, попадает по вам атакой, вы можете использовать реакцию, чтобы уменьшить вдвое урон, причиняемый вам этой атакой.' } }
+    ]
+};
+
+const RANGER_BASE = [
+    f('favored_enemy', 
+      'Favored Enemy', 
+      'Избранный враг', 
+      'Beginning at 1st level, you have significant experience studying, tracking, hunting, and even talking to a certain type of enemy.\n\nChoose a type of favored enemy: aberrations, beasts, celestials, constructs, dragons, elementals, fey, fiends, giants, monstrosities, oozes, plants, or undead. Alternatively, you can select two races of humanoid (such as gnolls and orcs) as favored enemies.\n\nYou have advantage on Wisdom (Survival) checks to track your favored enemies, as well as on Intelligence checks to recall information about them.\n\nWhen you gain this feature, you also learn one language of your choice that is spoken by your favored enemies, if they speak one at all.\n\nYou choose one additional favored enemy, as well as an associated language, at 6th and 14th level.', 
+      'Начиная с 1-го уровня, у вас есть значительный опыт в изучении, выслеживании, охоте и даже общении с определённым типом врагов.\n\nВыберите тип избранного врага: аберрации, звери, небожители, конструкты, драконы, элементали, феи, исчадия, великаны, монстры, слизи, растения или нежить. В качестве альтернативы вы можете выбрать две расы гуманоидов (например, гноллы и орки).\n\nВы совершаете с преимуществом проверки Мудрости (Выживание), чтобы выслеживать избранных врагов, а также проверки Интеллекта, чтобы вспоминать информацию о них.\n\nПолучая это умение, вы также выучиваете один язык по вашему выбору, на котором говорят ваши избранные враги, если они вообще умеют говорить.\n\nВы выбираете ещё одного дополнительного избранного врага и соответствующий язык на 6-м и 14-м уровнях.', 
+      1,
+      'Advantage on tracking/Int checks vs favored enemy. Learn language.',
+      'Преимущество на выслеживание/Инт. проверки против врага. Язык.',
+      'PHB'
+    ),
+
+    f('favored_foe', 
+      'Favored Foe', 
+      'Предпочтительный противник', 
+      'This feature replaces Favored Enemy. When you hit a creature with an attack roll, you can call on your mystical bond with nature to mark the target as your favored enemy for 1 minute or until you lose your concentration (as if you were concentrating on a spell).\n\nThe first time on each of your turns that you hit the favored enemy and deal damage to it, including when you mark it, you can increase that damage by 1d4.\n\nYou can use this feature to mark a favored enemy a number of times equal to your proficiency bonus, and you regain all expended uses when you finish a long rest.\n\nThis extra damage increases to 1d6 at 6th level and to 1d8 at 14th level.', 
+      'Опциональное умение следопыта, заменяющее умение «Избранный враг».\n\nКогда вы попадаете атакой по существу, вы можете призвать силы природы, чтобы отметить существо и сделать его своим избранным врагом на 1 минуту или до тех пор, пока не потеряете концентрацию (как если бы вы концентрировались на заклинании).\n\nПервый раз в каждый свой ход, когда вы попадаете атакой по избранному врагу и наносите ему урон, в том числе и когда вы отмечаете его, вы можете дополнительно нанести 1к4 урона того же типа.\n\nВы можете использовать это умение для отметки избранного врага количество раз, равное вашему бонусу мастерства. Вы восстанавливаете все потраченные использования после окончания продолжительного отдыха.\n\nДополнительный урон этого умения увеличивается, когда вы достигаете определённых уровней в этом классе: 1к6 на 6-м уровне и 1к8 на 14-м уровне.', 
+      1,
+      'When you hit a creature, you can mark it to deal extra damage once per turn. Requires Concentration.',
+      'При попадании по существу вы можете отметить его как избранного врага, чтобы наносить дополнительный урон один раз в ход. Требует Концентрации.',
+      'TCE'
+    ),
+
+    f('natural_explorer', 
+      'Natural Explorer', 
+      'Исследователь природы', 
+      'You are particularly familiar with one type of natural environment and are adept at traveling and surviving in such regions. Choose one type of favored terrain: arctic, coast, desert, forest, grassland, mountain, swamp, or the Underdark.\n\nWhen you make an Intelligence or Wisdom check related to your favored terrain, your proficiency bonus is doubled if you are using a skill that you\'re proficient in.\n\nWhile traveling for an hour or more in your favored terrain, you gain the following benefits:\n• Difficult terrain doesn\'t slow your group\'s travel.\n• Your group can\'t become lost except by magical means.\n• Even when you are engaged in another activity while traveling (such as foraging, navigating, or tracking), you remain alert to danger.\n• If you are traveling alone, you can move stealthily at a normal pace.\n• When you forage, you find twice as much food as you normally would.\n• While tracking other creatures, you also learn their exact number, their sizes, and how long ago they passed through the area.\n\nYou choose additional favored terrain types at 6th and 10th level.', 
+      'Вы особо хорошо знакомы с одним типом естественной среды, и наловчились путешествовать и выживать в таких регионах. Выберите один тип избранной местности: арктика, болото, горы, леc, луг, побережье, подземелье или пустыня.\n\nПри совершении проверки Интеллекта или Мудрости, связанной с вашей избранной местностью, ваш бонус мастерства удваивается, если вы используете навык, которым владеете.\n\nЕсли вы путешествуете по избранной местности час или больше, вы получаете следующие преимущества:\n• Труднопроходимая местность не замедляет путешествие вашей группы.\n• Ваша группа не может заблудиться, если только это не происходит из-за магии.\n• Даже если вы занимаетесь во время путешествия другой деятельностью (фуражировка, навигация, выслеживание), вы остаётесь бдительны к опасности.\n• Если вы путешествуете в одиночку, вы можете перемещаться скрытно в нормальном темпе.\n• При фуражировке вы находите вдвое больше еды, чем обычно.\n• Выслеживая других существ, вы также узнаёте их точное количество, размеры, и как давно они прошли здесь.\n\nВы выбираете дополнительные типы избранной местности на 6-м и 10-м уровнях.', 
+      1,
+      'Double Prof for Int/Wis checks in terrain. Travel benefits (no slow diff terrain, alert, etc).',
+      'Удвоенное мастерство для Инт/Муд проверок в местности. Бонусы путешествия.',
+      'PHB'
+    ),
+
+    f('deft_explorer', 
+      'Deft Explorer', 
+      'Искусный исследователь', 
+      'This feature replaces Natural Explorer. You gain the Canny benefit below, and you gain an additional benefit when you reach 6th level and 10th level in this class.\n\n**Canny (1st Level):** Choose one of your skill proficiencies. Your proficiency bonus is doubled for any ability check you make that uses the chosen skill. You can also speak, read, and write two additional languages.\n\n**Roving (6th Level):** Your walking speed increases by 5, and you gain a climbing speed and a swimming speed equal to your walking speed.\n\n**Tireless (10th Level):** As an action, you can give yourself a number of temporary hit points equal to 1d8 + your Wisdom modifier (minimum of 1 temporary hit point). You can use this action a number of times equal to your proficiency bonus per long rest. In addition, whenever you finish a short rest, your exhaustion level, if any, is decreased by 1.', 
+      'Заменяет Исследователя природы. Вы получаете преимущество Опытный, а также дополнительные преимущества на 6-м и 10-м уровнях.\n\n**Хитрец (1-й уровень):** Выберите один навык, которым владеете. Ваш бонус мастерства удваивается для любых проверок, использующих этот навык. Вы также изучаете два дополнительных языка.\n\n**Бродяга (6-й уровень):** Ваша скорость ходьбы увеличивается на 5 футов, и вы получаете скорость лазания и плавания, равную вашей скорости ходьбы.\n\n**Неутомимый (10-й уровень):** Действием вы можете дать себе временные хиты, равные 1к8 + ваш модификатор Мудрости. Использований: Бонус мастерства за долгий отдых. Кроме того, когда вы заканчиваете короткий отдых, ваш уровень истощения уменьшается на 1.', 
+      1,
+      'Canny (Expertise), Roving (Speed/Climb/Swim), Tireless (Temp HP/Exhaustion).',
+      'Хитрец (Компетентность), Бродяга (Скорость), Неутомимый (Врем. ХП).',
+      'TCE'
+    ),
+
+    f('fighting_style_ranger', 
+      'Fighting Style', 
+      'Боевой стиль', 
+      'At 2nd level, you adopt a particular style of fighting as your specialty. Choose one of the following options. You can\'t take a Fighting Style option more than once, even if you later get to choose again.', 
+      'На 2-м уровне вы выбираете специализацию в боевом стиле. Выберите один из доступных вариантов. Вы не можете выбирать один и тот же вариант боевого стиля более одного раза.', 
+      2,
+      undefined, undefined, 'PHB'),
+    
+    f('spellcasting_ranger', 
+      'Spellcasting', 
+      'Использование заклинаний', 
+      'By the time you reach 2nd level, you have learned to use the magical essence of nature to cast spells, much as a druid does.\n\n**Spell Slots.** The Ranger table shows how many spell slots you have to cast your spells of 1st level and higher. To cast one of these spells, you must expend a slot of the spell\'s level or higher. You regain all expended spell slots when you finish a long rest.\n\n**Spells Known.** You know a number of ranger spells equal to the number in the Spells Known column of the Ranger table. When you gain a level in this class, you can choose one of the ranger spells you know and replace it with another spell from the ranger spell list, which also must be of a level for which you have spell slots.\n\n**Spellcasting Ability.** Wisdom is your spellcasting ability for your ranger spells.\n\n**Spellcasting Focus.** You can use a druidic focus as a spellcasting focus for your ranger spells.', 
+      'К 2-му уровню вы учитесь использовать магическую эссенцию природы, чтобы накладывать заклинания, подобно друиду.\n\n**Ячейки заклинаний.** Таблица «Следопыт» показывает, сколько у вас есть ячеек заклинаний для накладывания заклинаний 1-го и более высоких уровней. Для накладывания одного из этих заклинаний вы должны потратить ячейку уровня заклинания или выше. Вы восстанавливаете все потраченные ячейки заклинаний по окончании продолжительного отдыха.\n\n**Известные заклинания.** Вы знаете количество заклинаний, указанное в колонке «известные заклинания» таблицы «Следопыт». Получая уровень в этом классе, вы можете заменить одно из известных вам заклинаний следопыта другим из списка заклинаний следопыта, уровень которого также должен соответствовать имеющимся у вас ячейкам заклинаний.\n\n**Базовая характеристика.** Мудрость является вашей базовой характеристикой для заклинаний следопыта.\n\n**Фокусировка.** Вы можете использовать друидическую фокусировку в качестве фокусировки для ваших заклинаний следопыта.', 
+      2,
+      'Wisdom based spellcasting. Spells Known.',
+      'Заклинания от Мудрости. Известные заклинания.',
+      'PHB'),
+    
+    f('ranger_archetype', 
+      'Ranger Archetype', 
+      'Архетип следопыта', 
+      'At 3rd level, you choose an archetype that you strive to emulate. Your choice grants you features at 3rd level and again at 7th, 11th, and 15th level.', 
+      'На 3-м уровне вы выбираете архетип, которому стремитесь подражать. Ваш выбор даёт вам умения на 3-м уровне, а также на 7-м, 11-м и 15-м уровнях.', 
+      3,
+      undefined, undefined, 'PHB'),
+    
+    f('primeval_awareness', 
+      'Primeval Awareness', 
+      'Изначальная осведомлённость', 
+      'Beginning at 3rd level, you can use your action and expend one ranger spell slot to focus your awareness on the region around you. For 1 minute per level of the spell slot you expend, you can sense whether the following types of creatures are present within 1 mile of you (or within up to 6 miles if you are in your favored terrain): aberrations, celestials, dragons, elementals, fey, fiends, and undead. This feature doesn\'t reveal the creatures\' location or number.', 
+      'Начиная с 3-го уровня, вы можете действием потратить одну ячейку заклинаний следопыта, чтобы сосредоточить своё восприятие на окружающей местности. В течение 1 минуты за каждый уровень потраченной ячейки заклинаний вы можете чувствовать присутствие следующих видов существ в пределах 1 мили от вас (или в пределах 6 миль, если вы находитесь в своей избранной местности): аберрации, драконы, исчадия, небожители, нежить, феи и элементали. Это умение не раскрывает местоположение и количество существ.', 
+      3,
+      'Expend slot to sense aberrations, dragons, etc. within 1 mile (1 min/level).',
+      'Трата ячейки: Чувствовать аберраций, драконов и т.д. в 1 миле (1 мин/уровень).',
+      'PHB'
+    ),
+    
+    f('primal_awareness', 
+      'Primal Awareness', 
+      'Первобытная осведомлённость', 
+      'This feature replaces Primeval Awareness. You can focus your awareness through the interconnections of nature: you learn additional spells when you reach certain levels in this class if you don\'t already know them, as shown in the Primal Awareness Spells table. These spells don\'t count against the number of ranger spells you know.\n\n3rd: Speak with Animals\n5th: Beast Sense\n9th: Speak with Plants\n13th: Locate Creature\n17th: Commune with Nature\n\nYou can cast each of these spells once without expending a spell slot. Once you cast a spell in this way, you can\'t do so again until you finish a long rest.', 
+      'Заменяет Изначальную осведомлённость. Вы можете фокусировать своё восприятие через взаимосвязи природы: вы узнаёте дополнительные заклинания на определённых уровнях, если ещё не знаете их. Эти заклинания не учитываются в количестве известных вам.\n\n3-й: Разговор с животными\n5-й: Животные чувства\n9-й: Разговор с растениями\n13-й: Поиск существа\n17-й: Общение с природой\n\nВы можете наложить каждое из этих заклинаний один раз без траты ячейки заклинаний. Восстанавливается после долгого отдыха.', 
+      3,
+      'Free casts of: Speak with Animals, Beast Sense, Speak with Plants, Locate Creature, Commune with Nature.',
+      'Бесплатные заклинания: Разговор с животными, Животные чувства и др.',
+      'TCE'
+    ),
+
+    f('ability_score_improvement_ranger', 
+      'Ability Score Improvement', 
+      'Увеличение характеристик', 
+      'When you reach 4th level, and again at 8th, 12th, 16th, and 19th level, you can increase one ability score of your choice by 2, or you can increase two ability scores of your choice by 1.', 
+      'При достижении 4-го, 8-го, 12-го, 16-го и 19-го уровней вы можете повысить значение одной из ваших характеристик на 2 или двух характеристик на 1.', 
+      4,
+      undefined, undefined, 'PHB'),
+
+    f('martial_versatility',
+      'Martial Versatility',
+      'Универсальность воина',
+      'Whenever you reach a level in this class that grants the Ability Score Improvement feature, you can replace a fighting style you know with another fighting style available to rangers.',
+      'Каждый раз, когда вы достигаете определённого уровня в этом классе и получаете умение «Увеличение характеристик», вы можете заменить известный вам боевой стиль на другой доступный следопыту.',
+      4,
+      undefined, undefined,
+      'TCE'
+    ),
+
+    f('cantrip_versatility_ranger', 
+        'Cantrip Versatility', 
+        'Универсальность заговоров', 
+        'Whenever you reach a level in this class that grants the Ability Score Improvement feature, you can replace one cantrip you learned from the Druidic Warrior fighting style with another cantrip from the druid spell list.', 
+        'Всякий раз, когда вы достигаете уровня в этом классе, дающего Увеличение характеристик, вы можете заменить один изученный заговор боевого стиля Воин-друид на другой из списка друида.', 
+        4,
+        undefined, undefined, 'TCE'),
+
+    f('extra_attack_ranger', 
+      'Extra Attack', 
+      'Дополнительная атака', 
+      'Beginning at 5th level, you can attack twice, instead of once, whenever you take the Attack action on your turn.', 
+      'Начиная с 5-го уровня, если вы совершаете действие Атака в свой ход, вы можете совершить две атаки вместо одной.', 
+      5,
+      undefined, undefined,
+      'PHB'
+    ),
+
+    f('favored_enemy_6', 
+      'Favored Enemy Improvement (6th Level)', 
+      'Улучшение Избранного врага (6-й уровень)', 
+      'You choose one additional favored enemy, as well as an associated language.', 
+      'Вы выбираете ещё одного дополнительного избранного врага и соответствующий язык.', 
+      6,
+      'Choose additional favored enemy and language.',
+      'Выберите доп. избранного врага и язык.',
+      'PHB'
+    ),
+
+    f('favored_foe_6', 
+      'Favored Foe Improvement (6th Level)', 
+      'Улучшение Предпочтительного противника (6-й уровень)', 
+      'The extra damage you deal to your favored foe increases to 1d6.', 
+      'Дополнительный урон по предпочтительному противнику увеличивается до 1к6.', 
+      6,
+      'Favored Foe damage increases to 1d6.',
+      'Урон Предпочтительного противника увеличивается до 1к6.',
+      'TCE'
+    ),
+
+    f('natural_explorer_6', 
+      'Natural Explorer Improvement (6th Level)', 
+      'Улучшение Исследователя природы (6-й уровень)', 
+      'You choose one additional favored terrain.', 
+      'Вы выбираете один дополнительный тип избранной местности.', 
+      6,
+      'Choose additional favored terrain.',
+      'Выберите доп. избранную местность.',
+      'PHB'
+    ),
+    
+    f('deft_explorer_6', 
+      'Roving (Deft Explorer)', 
+      'Бродяга (Искусный исследователь)', 
+      'Your walking speed increases by 5 feet, and you gain a climbing speed and a swimming speed equal to your walking speed.', 
+      'Ваша скорость ходьбы увеличивается на 5 футов, и вы получаете скорость лазания и плавания, равную вашей скорости ходьбы.', 
+      6,
+      undefined, undefined,
+      'TCE'
+    ),
+
+    f('lands_stride_ranger', 
+      'Land\'s Stride', 
+      'Тропы земли', 
+      'Starting at 8th level, moving through nonmagical difficult terrain costs you no extra movement. You can also pass through nonmagical plants without being slowed by them and without taking damage from them if they have thorns, spines, or a similar hazard.\n\nIn addition, you have advantage on saving throws against plants that are magically created or manipulated to impede movement, such those created by the Entangle spell.', 
+      'Начиная с 8-го уровня, перемещение по немагической труднопроходимой местности не стоит вам дополнительного перемещения. Вы также можете проходить через немагические растения без замедления и не получая от них урона, если у них есть шипы, колючки или другие подобные опасности.\n\nКроме того, вы совершаете с преимуществом спасброски от магически созданных или изменённых растений, затрудняющих движение, таких как от заклинания Опутывание.', 
+      8,
+      'You move through nonmagical difficult terrain without extra cost. You have advantage on saving throws against magical plants.',
+      'Вы перемещаетесь по немагической труднопроходимой местности без дополнительных затрат. Вы совершаете с преимуществом спасброски против магических растений.',
+      'PHB'
+    ),
+    
+    f('hide_in_plain_sight', 
+      'Hide in Plain Sight', 
+      'Маскировка на виду', 
+      'Starting at 10th level, you can spend 1 minute creating camouflage for yourself. You must have access to fresh mud, dirt, plants, soot, and other naturally occurring materials with which to create your camouflage.\n\nOnce you are camouflaged in this way, you can try to hide by pressing yourself up against a solid surface, such as a tree or wall, that is at least as tall and wide as you are. You gain a +10 bonus to Dexterity (Stealth) checks as long as you remain there without moving or taking actions. Once you move or take an action or a reaction, you must camouflage yourself again to gain this benefit.', 
+      'Начиная с 10-го уровня, вы можете потратить 1 минуту на создание камуфляжа для себя. У вас должны быть доступны свежая грязь, земля, растения, сажа и другие природные материалы.\n\nЗакамуфлировавшись таким образом, вы можете попытаться спрятаться, прижавшись к твёрдой поверхности, такой как дерево или стена, которая по крайней мере такой же высоты и ширины, как и вы. Вы получаете бонус +10 к проверкам Ловкости (Скрытность), пока остаётесь там, не двигаясь и не совершая действий. Как только вы перемещаетесь, совершаете действие или реакцию, вы должны закамуфлироваться снова, чтобы получить это преимущество.', 
+      10,
+      '1 min to camo: +10 Stealth while stationary against surface.',
+      '1 мин камуфляжа: +10 Скрытность, пока неподвижен у поверхности.',
+      'PHB'
+    ),
+    
+    f('natures_veil', 
+      'Nature\'s Veil', 
+      'Природная завеса', 
+      'This feature replaces Hide in Plain Sight. You draw on the powers of nature to hide yourself from view briefly. As a bonus action, you can magically become invisible, along with any equipment you are wearing or carrying, until the start of your next turn.\n\nYou can use this feature a number of times equal to your proficiency bonus, and you regain all expended uses when you finish a long rest.', 
+      'Заменяет Маскировку на виду. Вы обращаетесь к силам природы, чтобы они ненадолго скрыли вас от посторонних глаз. Бонусным действием вы можете магическим образом стать невидимым вместе со своим снаряжением, которое вы несёте или носите, до начала вашего следующего хода.\n\nВы можете использовать это умение количество раз, равное вашему бонусу мастерства. Вы восстанавливаете все потраченные использования после окончания продолжительного отдыха.', 
+      10,
+      'Bonus Action: Invisibility until start of next turn (PB/long rest).',
+      'Бонусное действие: Невидимость до начала след. хода (БМ/долгий отдых).',
+      'TCE'
+    ),
+
+    f('natural_explorer_10', 
+      'Natural Explorer Improvement (10th Level)', 
+      'Улучшение Исследователя природы (10-й уровень)', 
+      'You choose one additional favored terrain.', 
+      'Вы выбираете один дополнительный тип избранной местности.', 
+      10,
+      'Choose additional favored terrain.',
+      'Выберите доп. избранную местность.',
+      'PHB'
+    ),
+
+    f('deft_explorer_10', 
+      'Tireless (Deft Explorer)', 
+      'Неутомимый (Искусный исследователь)', 
+      'As an action, you can give yourself a number of temporary hit points equal to 1d8 + your Wisdom modifier (minimum of 1 temporary hit point). You can use this action a number of times equal to your proficiency bonus, and you regain all expended uses when you finish a long rest.\n\nIn addition, whenever you finish a short rest, your exhaustion level, if any, is decreased by 1.', 
+      'Действием вы можете дать себе временные хиты, равные 1к8 + ваш модификатор Мудрости. Использований: Бонус мастерства за долгий отдых.\n\nКроме того, когда вы заканчиваете короткий отдых, ваш уровень истощения уменьшается на 1.', 
+      10,
+      'As an action, you can gain temporary hit points. Exhaustion level decreases by 1 on a short rest.',
+      'Действием вы получаете временные хиты. Уровень истощения уменьшается на 1 после окончания короткого отдыха.',
+      'TCE'
+    ),
+
+    f('favored_enemy_14', 
+      'Favored Enemy Improvement (14th Level)', 
+      'Улучшение Избранного врага (14-й уровень)', 
+      'You choose one additional favored enemy, as well as an associated language.', 
+      'Вы выбираете ещё одного дополнительного избранного врага и соответствующий язык.', 
+      14,
+      'Choose additional favored enemy and language.',
+      'Выберите доп. избранного врага и язык.',
+      'PHB'
+    ),
+
+    f('favored_foe_14', 
+      'Favored Foe Improvement (14th Level)', 
+      'Улучшение Предпочтительного противника (14-й уровень)', 
+      'The extra damage you deal to your favored foe increases to 1d8.', 
+      'Дополнительный урон по предпочтительному противнику увеличивается до 1к8.', 
+      14,
+      'Favored Foe damage increases to 1d8.',
+      'Урон Предпочтительного противника увеличивается до 1к8.',
+      'TCE'
+    ),
+
+    f('vanish', 
+      'Vanish', 
+      'Исчезновение', 
+      'Starting at 14th level, you can use the Hide action as a bonus action on your turn. Also, you can\'t be tracked by nonmagical means, unless you choose to leave a trail.', 
+      'Начиная с 14-го уровня, вы можете использовать действие Засада (Спрятаться) бонусным действием в свой ход. Кроме того, вас нельзя выследить немагическими способами, если только вы сами не решите оставить следы.', 
+      14,
+      undefined, undefined,
+      'PHB'
+    ),
+    
+    f('feral_senses', 
+      'Feral Senses', 
+      'Звериные чувства', 
+      'At 18th level, you gain preternatural senses that help you fight creatures you can\'t see. When you attack a creature you can\'t see, your inability to see it doesn\'t impose disadvantage on your attack rolls against it.\n\nYou are also aware of the location of any invisible creature within 30 feet of you, provided that the creature isn\'t hidden from you and you aren\'t blinded or deafened.', 
+      'На 18-м уровне вы получаете сверхъестественные чувства, помогающие сражаться с существами, которых вы не видите. Когда вы атакуете существо, которое вы не видите, ваша неспособность видеть его не накладывает помеху на ваши броски атаки по нему.\n\nВы также знаете местоположение любого невидимого существа в пределах 30 футов от вас, при условии, что существо не спряталось от вас и вы не ослеплены и не оглушены.', 
+      18,
+      'No Disadvantage vs invisible foes. Sense invisible within 30ft.',
+      'Нет помехи против невидимых. Чувство невидимых в 30фт.',
+      'PHB'
+    ),
+    
+    f('foe_slayer', 
+      'Foe Slayer', 
+      'Убийца врагов', 
+      'At 20th level, you become an unparalleled hunter of your enemies. Once on each of your turns, you can add your Wisdom modifier to the attack roll or the damage roll of an attack you make against one of your favored enemies. You can choose to use this feature before or after the roll, but before any effects of the roll are applied.', 
+      'На 20-м уровне вы становитесь непревзойдённым охотником на своих врагов. Один раз в каждый ваш ход вы можете добавить модификатор Мудрости к броску атаки или урона атаки, которую вы совершаете по одному из своих избранных врагов. Вы можете сделать это до или после броска, но до того, как вступят в силу последствия броска.', 
+      20,
+      'Add WIS mod to attack or damage vs Favored Enemy (once/turn).',
+      'Добавить мод. МУД к атаке или урону по Избранному врагу (раз в ход).',
+      'PHB'
+    )
+];
+
+export const RANGER: ClassData = { 
+    id: 'ranger', 
+    name: { en: 'Ranger', ru: 'Следопыт' }, 
+    hitDie: 10, 
+    primaryAbility: ['dex', 'wis'], 
+    savingThrows: ['str', 'dex'], 
+    skillsChoice: { count: 3, options: ['animal_handling', 'athletics', 'insight', 'investigation', 'nature', 'perception', 'stealth', 'survival'] }, 
+    features: RANGER_BASE, 
+    spellcastingAbility: 'wis', 
+    multiclassRequirements: [{ requirements: { dex: 13, wis: 13 } }],
+    fightingStyles: RANGER_STYLES,
+    fightingStyleLevel: 2,
+    subclasses: [ 
+        // 1. Hunter (PHB)
+        sc('hunter', 'Hunter', 'Охотник', [ 
+            f('hunters_prey', 
+              'Hunter\'s Prey', 
+              'Добыча охотника', 
+              'At 3rd level, you gain one of the following features of your choice:\n\n**Colossus Slayer:** Your tenacity can wear down the most potent foes. When you hit a creature with a weapon attack, the creature takes an extra 1d8 damage if it\'s below its hit point maximum. You can deal this extra damage only once per turn.\n**Giant Killer:** When a Large or larger creature within 5 feet of you hits or misses you with an attack, you can use your reaction to attack that creature immediately after its attack, provided that you can see the creature.\n**Horde Breaker:** Once on each of your turns when you make a weapon attack, you can make another attack with the same weapon against a different creature that is within 5 feet of the original target and within range of your weapon.', 
+              'На 3-м уровне вы получаете одно из следующих умений на выбор:\n\n**Убийца колоссов:** Когда вы попадаете по существу атакой оружием, это существо получает дополнительно 1к8 урона, если его хиты ниже максимума. Вы можете наносить этот дополнительный урон только один раз за ход.\n**Убийца великанов:** Когда существо Большого или большего размера в пределах 5 футов от вас попадает или промахивается по вам атакой, вы можете реакцией атаковать это существо сразу после его атаки, если вы видите его.\n**Сокрушитель орд:** Один раз в каждый ваш ход, когда вы совершаете атаку оружием, вы можете совершить ещё одну атаку тем же оружием по другому существу, находящемуся в пределах 5 футов от первичной цели и в пределах досягаемости вашего оружия.', 
+              3,
+              'Choose one: Colossus Slayer, Giant Killer, or Horde Breaker.',
+              'Выберите опцию: Убийца колоссов, Убийца великанов или Сокрушитель орд.',
+              'PHB'
+            ),
+            f('defensive_tactics', 
+              'Defensive Tactics', 
+              'Оборонительная тактика', 
+              'At 7th level, you gain one of the following features of your choice:\n\n**Escape the Horde:** Opportunity attacks against you are made with disadvantage.\n**Multiattack Defense:** When a creature hits you with an attack, you gain a +4 bonus to AC against all subsequent attacks made by that creature for the rest of the turn.\n**Steel Will:** You have advantage on saving throws against being frightened.', 
+              'На 7-м уровне вы получаете одно из следующих умений на выбор:\n\n**Побег от орды:** Провоцированные атаки по вам совершаются с помехой.\n**Защита от мультиатаки:** Когда существо попадает по вам атакой, вы получаете бонус +4 к КД против всех последующих атак этого существа до конца хода.\n**Стальная воля:** Вы совершаете с преимуществом спасброски от испуга.', 
+              7,
+              'Choose one: Escape the Horde, Multiattack Defense, or Steel Will.',
+              'Выберите опцию: Побег от орды, Защита от мультиатаки или Стальная воля.',
+              'PHB'
+            ),
+            f('multiattack', 
+              'Multiattack', 
+              'Мультиатака', 
+              'At 11th level, you gain one of the following features of your choice:\n\n**Volley:** You can use your action to make a ranged attack against any number of creatures within 10 feet of a point you can see within your weapon\'s range. You must have ammunition for each target, as normal, and you make a separate attack roll for each target.\n**Whirlwind Attack:** You can use your action to make a melee attack against any number of creatures within 5 feet of you, with a separate attack roll for each target.', 
+              'На 11-м уровне вы получаете одно из следующих умений на выбор:\n\n**Залп:** Вы можете действием совершить дальнобойную атаку по любому количеству существ в пределах 10 футов от точки, которую вы видите в пределах дистанции вашего оружия. Вы должны иметь боеприпасы для каждой цели, и вы совершаете отдельный бросок атаки для каждой цели.\n**Вихревая атака:** Вы можете действием совершить рукопашную атаку по любому количеству существ в пределах 5 футов от вас, с отдельным броском атаки для каждой цели.', 
+              11,
+              'Choose one: Volley or Whirlwind Attack.',
+              'Выберите опцию: Залп или Вихревая атака.',
+              'PHB'
+            ),
+            f('superior_hunters_defense', 
+              'Superior Hunter\'s Defense', 
+              'Высшая защита охотника', 
+              'At 15th level, you gain one of the following features of your choice:\n\n**Evasion:** When you are subjected to an effect, such as a red dragon\'s fiery breath or a lightning bolt spell, that allows you to make a Dexterity saving throw to take only half damage, you instead take no damage if you succeed on the saving throw, and only half damage if you fail.\n**Stand Against the Tide:** When a hostile creature misses you with a melee attack, you can use your reaction to force that creature to repeat the same attack against another creature (other than itself) of your choice.\n**Uncanny Dodge:** When an attacker that you can see hits you with an attack, you can use your reaction to halve the attack\'s damage against you.', 
+              'На 15-м уровне вы получаете одно из следующих умений на выбор:\n\n**Увёртливость:** Если вы попадаете под эффект, позволяющий совершить спасбросок Ловкости, чтобы получить только половину урона, вы не получаете урона при успехе и получаете только половину урона при провале.\n**Стойкость против течения:** Когда враждебное существо промахивается по вам рукопашной атакой, вы можете реакцией заставить это существо повторить ту же атаку по другому существу (кроме него самого) на ваш выбор.\n**Невероятное уклонение:** Когда нападающий, которого вы видите, попадает по вам атакой, вы можете использовать реакцию, чтобы уменьшить вдвое урон этой атаки по вам.', 
+              15,
+              'Choose one: Evasion, Stand Against the Tide, or Uncanny Dodge.',
+              'Выберите опцию: Увёртливость, Стойкость против течения или Невероятное уклонение.',
+              'PHB'
+            )
+        ], 'PHB'),
+
+        // 2. Beast Master (PHB + TCoE Primal Companion)
+        sc('beast_master', 'Beast Master', 'Повелитель Зверей', [ 
+            f('rangers_companion', 
+              'Ranger\'s Companion', 
+              'Спутник следопыта', 
+              'The Beast Master archetype embodies a friendship between civilization and the beasts of the world. United in focus, beast and ranger work as one to fight the monstrous foes that threaten civilization and the wilderness alike.\n\nYou gain a beast companion that accompanies you on your adventures and is trained to fight alongside you. Choose a beast that is no larger than Medium and that has a challenge rating of 1/4 or lower. Add your proficiency bonus to the beast\'s AC, attack rolls, and damage rolls, as well as to any saving throws and skills it is proficient in. Its hit point maximum equals its normal maximum or four times your ranger level, whichever is higher.\n\nThe beast obeys your commands as best as it can. It takes its turn on your initiative. On your turn, you can verbally command the beast where to move (no action required by you). You can use your action to verbally command it to take the Attack, Dash, Disengage, or Help action. If you don\'t issue a command, the beast takes the Dodge action. If you have the Extra Attack feature, you can make one weapon attack yourself when you command the beast to take the Attack action.\n\nIf you are incapacitated or absent, the beast acts on its own, focusing on protecting you and itself. The beast doesn\'t require your command to use its reaction, such as when making an opportunity attack.\n\nWhile traveling through your favored terrain with only the beast, you can move stealthily at a normal pace.\n\nIf the beast dies, you can obtain another one by spending 8 hours magically bonding with another beast that isn\'t hostile to you, either the same type of beast as before or a different one.', 
+              'Архетип повелителя зверей воплощает в себе дружбу между цивилизацией и зверями дикого мира. Объединяя усилия, зверь и следопыт работают как одно целое, борясь с чудовищными врагами, угрожающими цивилизации и дикой природе.\n\nВы получаете Зверя-спутника, который сопровождает вас во время приключений и обучен сражаться вместе с вами. Выберите Зверя, с размером не больше Среднего, ПО которого 1/4 или ниже (Книга игрока представляет параметры ястреба, мастиффа и пантеры в качестве примеров). Добавьте свой бонус мастерства к КД, броскам атаки и урона Зверя, а также к спасброскам и навыкам, которыми он владеет. Максимум его хитов равен его обычному максимуму или вашему четырёхкратному уровню следопыта, в зависимости от того, что выше.\n\nЗверь подчиняется вашим командам так хорошо, как только может. Он совершает ход с вашей инициативой. Как любые другие существа, Зверь может тратить Кости Хитов во время короткого отдыха. Во время своего хода вы можете устно командовать Зверем, куда ему двигаться (для этого не требуется никаких действий от вас). Вы можете действием дать устную команду Зверю совершить Атаку, Отход, Помощь, Рывок. Если вы не даёте команду, Зверь совершает действие Уклонения. Если у вас есть умение «Дополнительная атака», вы можете сами совершить одну атаку оружием, когда приказываете Зверю совершить действие Атака.\n\nЕсли вы недееспособны или отсутствуете, зверь действует самостоятельно, сосредотачиваясь на защите вас и себя. Зверю не требуется ваша команда для использования реакции, вроде провоцированной атаки.\n\nПутешествуя по избранной местности только вдвоём со Зверем, вы можете передвигаться скрытно в нормальном темпе.\n\nЕсли Зверь умирает, вы можете получить другого, потратив 8 часов на волшебное связывание себя со Зверем, не враждебным к вам, того же вида, либо другого.', 
+              3,
+              'Medium beast (CR 1/4). Acts on your initiative, needs Action to attack.',
+              'Зверь (ПО 1/4). Ходит по вашей инициативе, требует Действия для атаки.',
+              'PHB'
+            ),
+            f('primal_companion',
+              'Primal Companion',
+              'Первичный спутник',
+              'This feature replaces Ranger\'s Companion.\n\nYou magically summon a primal beast, which draws strength from your bond with nature. The beast is friendly to you and your companions and obeys your commands. Choose its stat block—Beast of the Land, Beast of the Sea, or Beast of the Sky—which uses your proficiency bonus (PB) in several places. You also determine the kind of animal the beast is, choosing a kind appropriate for the stat block. Whatever kind you choose, the beast bears primal markings, indicating its mystical origin.\n\nIn combat, the beast acts during your turn. It can move and use its reaction on its own, but the only action it takes is the Dodge action, unless you take a bonus action on your turn to command it to take another action. That action can be one in its stat block or some other action. You can also sacrifice one of your attacks when you take the Attack action to command the beast to take the Attack action. If you are incapacitated, the beast can take any action of its choice, not just Dodge.\n\nIf the beast has died within the last hour, you can use your action to touch it and expend a spell slot of 1st level or higher. The beast returns to life after 1 minute with all its hit points restored.\n\nWhen you finish a long rest, you can summon a different primal beast. The new beast appears in an unoccupied space within 5 feet of you, and you choose its stat block and appearance. If you already have a beast from this feature, it vanishes when the new beast appears. The beast also vanishes if you die.',
+              'Заменяет Спутник следопыта.\n\nВы магическим образом призываете первичного зверя, который черпает силу из вашей связи с природой. Зверь дружелюбен к вам и вашим союзникам, а также подчиняется вашим командам. Выберите одного из следующих существ: земной зверь, морской зверь или небесный зверь. Блоки статистики этих существ используют ваш бонус мастерства (БМ) в некоторых местах. Вы также определяете внешний вид существа в соответствии с типом Зверя и его блоком статистики. Какой бы вид вы ни выбрали, Зверь несёт на себе метки, указывающие на его мистическое происхождение.\n\nВ бою Зверь действует во время вашего хода. Он может перемещаться и использовать свою реакцию самостоятельно, но единственное действие, которое он может совершать в свой ход, — это Уклонение, если только вы не используете своё бонусное действие, чтобы приказать ему сделать что-то другое. Это действие может быть одним из действий из его блока статистики или любым другим действием. Вы также можете пожертвовать одной из своих атак, когда совершаете действие Атака, и приказать Зверю совершить действие Атака. Если вы недееспособны, то Зверь может использовать любое действие по своему усмотрению, а не только Уклонение.\n\nЕсли Зверь погибает, то в течение часа вы можете действием прикоснуться к нему и использовать ячейку заклинания 1-го уровня или выше. Зверь возвращается к жизни через 1 минуту, восстанавливая все свои хиты.\n\nКогда вы закончите продолжительный отдых, вы можете призвать другого первичного зверя. Новый Зверь появляется в свободном пространстве в пределах 5 футов от вас, и вы выбираете его внешний вид и блок статистики. Если у вас уже есть Зверь от этого умения, то он исчезает, когда появляется новый. Зверь исчезает, если вы умираете.',
+              3,
+              'Summon Primal Beast (Land/Sea/Sky). Acts on your turn. Bonus Action to command.',
+              'Первичный зверь (Земля/Море/Небо). Ходит в ваш ход. Бонусное действие для приказа.',
+              'TCE'
+            ),
+            f('exceptional_training', 
+              'Exceptional Training', 
+              'Исключительная дрессировка', 
+              'On any of your turns when your beast companion doesn\'t attack, you can use a bonus action to command the beast to take the Dash, Disengage, or Help action on its turn.\n\nIn addition, the beast\'s attacks count as magical for the purpose of overcoming resistance and immunity to nonmagical attacks and damage.', 
+              'Если в ваш ход Зверь-спутник не нападает, вы можете бонусным действием приказать Зверю совершить Отход, Помощь, Рывок в его ход. Кроме того, атаки Зверя считаются магическими при определении преодоления сопротивления и иммунитета к немагическим атакам и урону.', 
+              7,
+              undefined, undefined,
+              'PHB'
+            ),
+            f('bestial_fury', 
+              'Bestial Fury', 
+              'Звериная ярость', 
+              'When you command the beast to take the Attack action, the beast can make two attacks, or it can take the Multiattack action if it has that action.', 
+              'Когда вы приказываете своему Зверю использовать действие Атака, он может совершить либо две атаки, либо действие Мультиатака, если у него оно есть.', 
+              11,
+              undefined, undefined,
+              'PHB'
+            ),
+            f('share_spells', 
+              'Share Spells', 
+              'Общие заклинания', 
+              'When you cast a spell targeting yourself, you can also affect your beast companion with the spell if the beast is within 30 feet of you.', 
+              'Когда вы накладываете заклинание, направленное на себя, вы также можете распространить его эффект на Зверя-спутник, если он находится в пределах 30 футов от вас.', 
+              15,
+              undefined, undefined,
+              'PHB'
+            )
+        ], 'PHB'),
+
+        // 3. Gloom Stalker (XGtE)
+        sc('gloom_stalker', 'Gloom Stalker', 'Сумрачный Охотник', [ 
+            f('gloom_stalker_magic',
+              'Gloom Stalker Magic',
+              'Магия сумрачного охотника',
+              'You learn an additional spell when you reach certain levels in this class, as shown in the Gloom Stalker Spells table. The spell counts as a ranger spell for you, but it doesn\'t count against the number of ranger spells you know.\n\n3rd: Disguise Self\n5th: Rope Trick\n9th: Fear\n13th: Greater Invisibility\n17th: Seeming',
+              'Вы узнаете дополнительные заклинания, когда достигнете определенных уровней в этом классе, как показано в таблице «Заклинания сумрачного охотника». Заклинания считаются для вас заклинаниями следопыта, и они не учитываются при подсчёте известных вам заклинаний следопыта.\n\n3-й: маскировка [disguise self]\n5-й: трюк с верёвкой [rope trick]\n9-й: ужас [fear]\n13-й: высшая невидимость [greater invisibility]\n17-й: притворство [seeming]',
+              3,
+              'Learn specific spells at levels 3, 5, 9, 13, 17.',
+              'Изучение спец. заклинаний на 3, 5, 9, 13, 17 ур.',
+              'XGE'
+            ),
+            f('dread_ambusher', 
+              'Dread Ambusher', 
+              'Угроза из засады', 
+              'You master the art of the ambush. You can give yourself a bonus to your initiative rolls equal to your Wisdom modifier.\n\nAt the start of your first turn of each combat, your walking speed increases by 10 feet, which lasts until the end of that turn. If you take the Attack action on that turn, you can make one additional weapon attack as part of that action. If that attack hits, the target takes an extra 1d8 damage of the weapon\'s type.', 
+              'Вы овладеваете мастерством засад. Вы можете добавить к броску инициативы бонус, равный вашему модификатору Мудрости.\n\nВ начале вашего первого хода в каждом бою ваша скорость ходьбы увеличивается на 10 футов до конца этого хода. Если вы совершаете действие Атаки в этот ход, вы можете совершить одну дополнительную атаку оружием частью этого действия.\n\nЕсли эта атака попадает, цель получает дополнительно 1к8 урона такого же типа, что и урон оружия.', 
+              3,
+              '+WIS to Init. First turn: +10ft speed, +1 attack (+1d8 dmg).',
+              'Бонус к инициативе равный модификатору Мудрости. В первом ходу скорость увеличивается на 10 футов и вы можете совершить одну дополнительную атаку, которая наносит 1к8 дополнительного урона.',
+              'XGE'
+            ),
+            f('umbral_sight', 
+              'Umbral Sight', 
+              'Теневой взор', 
+              'You gain darkvision out to a range of 60 feet. If you already have darkvision from your race, its range increases by 30 feet.\n\nYou are also adept at evading creatures that rely on darkvision. While in darkness, you are invisible to any creature that relies on darkvision to see you in that darkness.', 
+              'Вы получаете тёмное зрение в пределах 60 футов. Если вы имеете тёмное зрение от вашей расы, его дистанция увеличивается на 30 футов. Вы также сведущи в уклонении от существ, которые полагаются на тёмное зрение. Находясь во тьме, вы невидимы для любого существа, полагающегося на тёмное зрение, чтобы увидеть вас в этой темноте.', 
+              3,
+              'Darkvision 60ft. Invisible to Darkvision in darkness.',
+              'Тёмное зрение 60 футов (или +30 футов). Вы невидимы для существ с тёмным зрением, когда находитесь в темноте.',
+              'XGE'
+            ),
+            f('iron_mind', 
+              'Iron Mind', 
+              'Железный разум', 
+              'You have honed your ability to resist the mind-altering powers of your prey. You gain proficiency in Wisdom saving throws. If you already have this proficiency, you instead gain proficiency in Intelligence or Charisma saving throws (your choice).', 
+              'Вы отточили технику сопротивления влияющим на разум способностям вашей добычи. Вы получаете владение спасбросками Мудрости. Если у вас уже есть это владение, вы вместо этого можете получить владение спасброском Интеллекта или Харизмы (по вашему выбору).', 
+              7,
+              'Proficiency in Wisdom saving throws.',
+              'Владение спасбросками Мудрости. Если уже есть, то Интеллекта или Харизмы.',
+              'XGE'
+            ),
+            f('stalkers_flurry', 
+              'Stalker\'s Flurry', 
+              'Охотничья ярость', 
+              'You learn to attack with such unexpected speed that you can turn a miss into another strike. Once on each of your turns when you miss with a weapon attack, you can make another weapon attack as part of the same action.', 
+              'Вы научились атаковать с такой неожиданной скоростью, что можете превратить промах в очередной удар. Один раз в каждый из своих ходов, когда вы промахиваетесь атакой оружием, вы можете совершить еще одну атаку оружием частью того же действия.', 
+              11,
+              'Reroll one missed attack per turn.',
+              'Один раз в ход при промахе атакой оружием вы можете совершить ещё одну атаку.',
+              'XGE'
+            ),
+            f('shadowy_dodge', 
+              'Shadowy Dodge', 
+              'Теневое уклонение', 
+              'You can dodge in unforeseen ways, with wisps of supernatural shadow around you. Whenever a creature makes an attack roll against you and doesn\'t have advantage on the roll, you can use your reaction to impose disadvantage on it. You must use this feature before you know the outcome of the attack roll.', 
+              'Вы можете уклоняться непредвиденными способами, окружая себя сверхъестественными пучками теней. Всякий раз, когда существо совершает атаку против вас и не совершает этот бросок с преимуществом, вы можете реакцией наложить на него помеху.\n\nЭто умение необходимо использовать до того, как будет известен результат атаки.', 
+              15,
+              'Reaction: Impose disadvantage on attack against you.',
+              'Реакцией можно наложить помеху на атаку по вам, если у атакующего нет преимущества.',
+              'XGE'
+            )
+        ], 'XGE'),
+
+        // 4. Horizon Walker (XGtE)
+        sc('horizon_walker', 'Horizon Walker', 'Странник Горизонта', [
+            f('horizon_walker_magic',
+              'Horizon Walker Magic',
+              'Магия странников горизонта',
+              'You learn an additional spell when you reach certain levels in this class, as shown in the Horizon Walker Spells table. The spell counts as a ranger spell for you, but it doesn\'t count against the number of ranger spells you know.\n\n3rd: Protection from Evil and Good\n5th: Misty Step\n9th: Haste\n13th: Banishment\n17th: Teleportation Circle',
+              'Вы узнаете дополнительные заклинания, когда достигнете определенных уровней в этом классе, как показано в таблице «Заклинания странника горизонта». Заклинания считаются для вас заклинаниями следопыта, и они не учитываются при подсчёте известных вам заклинаний следопыта.\n\n3-й: защита от зла и добра [protection from evil and good]\n5-й: туманный шаг [misty step]\n9-й: ускорение [haste]\n13-й: изгнание [banishment]\n17-й: круг телепортации [teleportation circle]',
+              3,
+              'Learn specific spells at levels 3, 5, 9, 13, 17.',
+              'Изучение спец. заклинаний на 3, 5, 9, 13, 17 ур.',
+              'XGE'
+            ),
+            f('detect_portal', 
+              'Detect Portal', 
+              'Обнаружение портала', 
+              'At 3rd level, you gain the ability to sense the presence of planar portals. As an action, you detect the distance and direction to the closest planar portal within 1 mile of you. You can use this feature once per short or long rest. See the "Planar Travel" section in chapter 2 of the "Dungeon Master\'s Guide" for examples of planar portals.', 
+              'Вы получаете возможность волшебным образом ощутить присутствие планарного портала. Действием вы можете определить расстояние и направление до ближайшего планарного портала в пределах 1 мили от вас. Использовав это умение, вы не можете использовать его повторно до окончания короткого или продолжительного отдыха. Примеры планарных порталов см. в разделе «Путешествия по планам» главы 2 «Руководства Мастера».', 
+              3,
+              'Detect distance/direction to planar portal (1 mile).',
+              'Определить расстояние и направление до ближайшего планарного портала в пределах 1 мили.',
+              'XGE'
+            ),
+            f('planar_warrior', 
+              'Planar Warrior', 
+              'Планарный воин', 
+              'At 3rd level, you learn to draw on the energy of the multiverse to augment your attacks. As a bonus action, choose one creature you can see within 30 feet of you. The next time you hit that creature on this turn with a weapon attack, all damage dealt by the attack becomes force damage, and the creature takes an extra 1d8 force damage from the attack. When you reach 11th level in this class, the extra damage increases to 2d8.', 
+              'Вы учитесь использовать энергию мультивселенной, чтобы усиливать ваши атаки. Бонусным действием выберите одно существо, которое вы можете видеть в пределах 30 футов. В следующий раз, когда вы попадёте по этому существу оружием на этом ходу, весь урон, причинённый атакой, становится уроном силовым полем, и существо получает дополнительно 1к8 урона силовым полем. Дополнительный урон увеличивается до 2к8 на 11-м уровне.', 
+              3,
+              'BA: Next hit becomes Force dmg + 1d8 (2d8 at 11th).',
+              'Бонусное действие: Следующее попадание наносит урон силовым полем и дополнительные 1к8 урона (2к8 на 11-м уровне).',
+              'XGE'
+            ),
+            f('ethereal_step', 
+              'Ethereal Step', 
+              'Эфирный шаг', 
+              'At 7th level, you learn to step through the Ethereal Plane. As a bonus action, you can cast the Etherealness spell with this feature, without expending a spell slot, but the spell ends at the end of the current turn. Once you use this feature, you can\'t use it again until you finish a short or long rest.', 
+              'Вы осваиваете хождение по Эфирному плану. Вы можете бонусным действием наложить заклинание эфирность [etherealness], без траты ячеек заклинаний, но заклинание заканчивается в конце текущего хода. Использовав это умение, вы не можете использовать его повторно до окончания короткого или продолжительного отдыха.', 
+              7,
+              'BA: Cast Etherealness (1 turn). 1/rest.',
+              'Бонусное действие: Наложить заклинание Эфирность на 1 ход. Восстанавливается после отдыха.',
+              'XGE'
+            ),
+            f('distant_strike', 
+              'Distant Strike', 
+              'Дальний удар', 
+              'At 11th level, you gain the ability to pass between the planes in the blink of an eye. When you take the Attack action, you can teleport up to 10 feet before each attack to an unoccupied space you can see. If you attack at least two different creatures with the action, you can make one additional attack with it against a third creature.', 
+              'Вы получаете возможность проходить между планами в мгновение ока. Когда вы совершаете действие Атака, вы можете перед каждой атакой телепортироваться на расстояние до 10 футов в свободное пространство, которое вы можете видеть. Если вы атакуете по крайней мере двух различных существ за одно действие, вы можете тем же действием совершить одну дополнительную атаку против третьего существа.', 
+              11,
+              'Teleport 10ft before each attack. Extra attack if targeting 3rd creature.',
+              'Телепортация на 10 футов перед каждой атакой. Дополнительная атака по третьему существу.',
+              'XGE'
+            ),
+            f('spectral_defense', 
+              'Spectral Defense', 
+              'Спектральная защита', 
+              'At 15th level, your ability to move between planes enables you to slip through the boundaries of reality to lessen the harm done to you during battle. When you take damage from an attack, you can use your reaction to give yourself resistance to all of that attack\'s damage on this turn.', 
+              'Ваша способность перемещаться между планами позволяет скользить через планарные границы, чтобы уменьшать вред, наносимый вам во время боя. Когда вы получаете урон от атаки, вы можете реакцией дать себе сопротивление всему урону от этой атаки на этот ход.', 
+              15,
+              'Reaction: Resistance to damage from an attack.',
+              'Реакция: Получить сопротивление урону от атаки.',
+              'XGE'
+            )
+        ], 'XGE'),
+
+        // 5. Monster Slayer (XGtE)
+        sc('monster_slayer', 'Monster Slayer', 'Убийца Чудовищ', [
+            f('monster_slayer_magic',
+              'Monster Slayer Magic',
+              'Магия убийцы чудовищ',
+              'You learn an additional spell when you reach certain levels in this class, as shown in the Monster Slayer Spells table. The spell counts as a ranger spell for you, but it doesn\'t count against the number of ranger spells you know.\n\n3rd: Protection from Evil and Good\n5th: Zone of Truth\n9th: Magic Circle\n13th: Banishment\n17th: Hold Monster',
+              'Вы узнаёте дополнительные заклинания, когда вы достигнете определенных уровней в этом классе, как показано в таблице «Заклинания убийцы чудовищ». Заклинания считаются для вас заклинаниями следопыта, и они не учитываются при подсчёте известных вам заклинаний следопыта.\n\n3-й: защита от зла и добра [protection from evil and good]\n5-й: зона правды [zone of truth]\n9-й: магический круг [magic circle]\n13-й: изгнание [banishment]\n17-й: удержание чудовища [hold monster]',
+              3,
+              'Learn specific spells at levels 3, 5, 9, 13, 17.',
+              'Изучение спец. заклинаний на 3, 5, 9, 13, 17 ур.',
+              'XGE'
+            ),
+            f('hunters_sense', 
+              'Hunter\'s Sense', 
+              'Охотничьи чувства', 
+              'At 3rd level, you gain the ability to peer at a creature and magically discern how best to hurt it. As an action, choose one creature you can see within 60 feet of you. You immediately learn whether the creature has any damage immunities, resistances, or vulnerabilities and what they are. If the creature is hidden from divination magic, you sense that it has no damage immunities, resistances, or vulnerabilities. You can use this feature a number of times equal to your Wisdom modifier (minimum of once). You regain all expended uses of it when you finish a short or long rest.', 
+              'Вы получаете способность оценить существо и определить, как лучше всего навредить ему. Действием выберите одно существо, которое вы можете видеть в пределах 60 футов. Вы мгновенно узнаёте, имеет ли существо какие-либо иммунитеты, сопротивления или уязвимости, и какие они. Если существо скрыто от магии Прорицания, то вы чувствуете, что у него нет иммунитетов, сопротивлений или уязвимостей.\n\nВы можете использовать это умение количество раз равное модификатору вашей Мудрости (минимум 1). Вы восстанавливаете все потраченные использования после окончания короткого или продолжительного отдыха.', 
+              3,
+              'Action: Learn immunities/resistances/vulnerabilities of target (WIS mod/short rest).',
+              'Действие: Узнать иммунитеты/сопротивления/уязвимости цели (МУД раз/кор. отдых).',
+              'XGE'
+            ),
+            f('slayers_prey', 
+              'Slayer\'s Prey', 
+              'Добыча убийцы', 
+              'Starting at 3rd level, you can focus your ire on one foe, increasing the harm you inflict on it. As a bonus action, you designate one creature you can see within 60 feet of you as the target of this feature. The first time each turn that you hit that target with a weapon attack, it takes an extra 1d6 damage from the weapon.\n\nThis benefit lasts until you finish a short or long rest. It ends early if you designate a different creature.', 
+              'Вы можете сфокусировать свой гнев на одном враге, увеличивая урон, который вы ему причиняете.\n\nБонусным действием вы выбираете целью этого умения одно существо, которое можете видеть в пределах 60 футов. На каждом ходу, когда вы первый раз попадаете по этой цели атакой оружием, она получает дополнительно 1к6 урона от оружия.\n\nЭто преимущество действует до окончания вашего короткого или продолжительного отдыха. Оно заканчивается раньше, если вы выбираете другое существо.', 
+              3,
+              'BA Mark: +1d6 dmg on first hit each turn.',
+              'БД Метка: +1к6 урона при первом попадании в ход.',
+              'XGE'
+            ),
+            f('supernatural_defense', 
+              'Supernatural Defense', 
+              'Сверхъестественная защита', 
+              'At 7th level, whenever the target of your Slayer\'s Prey forces you to make a saving throw and whenever you make an ability check to escape that target\'s grapple, add 1d6 to your roll.', 
+              'Вы получаете дополнительную устойчивость против нападений вашей добычи на ваш ум и тело. Всякий раз, когда цель умения «Добыча убийцы» заставляет вас совершить спасбросок или когда вы совершаете проверку характеристики, чтобы перестать быть схваченным этой целью — добавьте 1к6 к броску.', 
+              7,
+              '+1d6 to saves/grapple checks vs Slayer\'s Prey.',
+              '+1к6 к спасам/проверкам захвата против Добычи.',
+              'XGE'
+            ),
+            f('magic_users_nemesis', 
+              'Magic-User\'s Nemesis', 
+              'Враг заклинателя', 
+              'At 11th level, you gain the ability to thwart someone else\'s magic. When you see a creature casting a spell or teleporting within 60 feet of you, you can use your reaction to try to magically foil it. The creature must succeed on a Wisdom saving throw against your spell save DC, or its spell fails and is wasted, or its teleport fails. Once you use this feature, you can\'t use it again until you finish a short or long rest.', 
+              'Вы получаете способность разрушать чужую магию.\n\nКогда вы видите существо, накладывающее заклинание или телепортирующееся в пределах 60 футов от вас, вы можете реакцией попытаться магически помешать ей. Существо должно преуспеть в спасброске Мудрости против Сл ваших заклинаний, иначе заклинание или телепортация терпит неудачу.\n\nИспользовав это умение, вы не можете использовать его повторно до окончания короткого или продолжительного отдыха.', 
+              11,
+              'Reaction: Negate spell/teleport (Wis save). 1/short rest.',
+              'Реакция: Отменить заклинание/телепорт (Спас Мудр). 1/кор. отдых.',
+              'XGE'
+            ),
+            f('slayers_counter', 
+              'Slayer\'s Counter', 
+              'Контратака убийцы', 
+              'At 15th level, you gain the ability to counterattack when your prey tries to sabotage you. If the target of your Slayer\'s Prey forces you to make a saving throw, you can use your reaction to make one weapon attack against the quarry. You make this attack immediately before making the saving throw. If your attack hits, your save automatically succeeds, in addition to the attack\'s normal effects.', 
+              'Вы получаете возможность контратаковать, когда ваша жертва пытается навредить вам. Если цель умения «Добыча убийцы» заставляет вас совершить спасбросок, то вы можете реакцией совершить одну атаку оружием по Добыче. Вы совершаете эту атаку непосредственно перед выполнением спасброска. Если атака попадает, вы автоматически проходите спасбросок в дополнение к обычным эффектам атаки.', 
+              15,
+              'Reaction: Attack Prey if it forces a save. Auto-succeed save on hit.',
+              'Реакция: Атаковать Добычу при спасе. Авто-успех спаса при попадании.',
+              'XGE'
+            )
+        ], 'XGE'),
+
+        // 6. Fey Wanderer (TCoE)
+        sc('fey_wanderer', 'Fey Wanderer', 'Странник фей', [
+            f('dreadful_strikes', 
+              'Dreadful Strikes', 
+              'Ужасающие удары', 
+              'You can augment your weapon strikes with mind-scarring magic, drawn from the gloomy hollows of the Feywild. When you hit a creature with a weapon, you can deal an extra 1d4 psychic damage to the target, which can take this extra damage only once per turn.\n\nThe extra damage increases to 1d6 when you reach 11th level in this class.', 
+              'Вы усиливаете свои атаки с помощью разрушающей разум магии. Вы черпаете её из сумрачных пустот Страны Фей. Когда вы попадаете атакой по цели, вы можете нанести дополнительно 1к4 урона психической энергией. Существо может получить этот дополнительный урон только один раз за ход.\n\nДополнительный урон увеличивается до 1к6, когда вы достигаете 11-го уровня в этом классе.', 
+              3,
+              '+1d4/1d6 Psychic dmg once per turn per target.',
+              '+1к4/1к6 Психического урона раз в ход по цели.',
+              'TCE'
+            ),
+            f('fey_wanderer_magic', 
+              'Fey Wanderer Magic', 
+              'Магия странника фей', 
+              'You learn an additional spell when you reach certain levels in this class, as shown in the Fey Wanderer Spells table. The spell counts as a ranger spell for you, but it doesn\'t count against the number of ranger spells you know.\n\n3rd: Charm Person\n5th: Misty Step\n9th: Dispel Magic\n13th: Dimension Door\n17th: Mislead', 
+              'Когда вы достигаете определённого уровня, вы узнаёте новые заклинания в этом классе, как показано в таблице «Заклинания странника фей». Для вас они считаются заклинаниями следопыта, однако они не учитываются в общем количестве заклинаний, которые вы знаете.\n\n3-й: очарование личности [charm person]\n5-й: туманный шаг [misty step]\n9-й: рассеивание магии [dispel magic]\n13-й: переносящая дверь [dimension door]\n17-й: фальшивый двойник [mislead]', 
+              3,
+              'Learn specific spells at levels 3, 5, 9, 13, 17.',
+              'Изучение спец. заклинаний на 3, 5, 9, 13, 17 ур.',
+              'TCE'
+            ),
+            f('otherworldly_glamour', 
+              'Otherworldly Glamour', 
+              'Потустороннее очарование', 
+              'Your fey qualities give you a supernatural charm. As a result, whenever you make a Charisma check, you gain a bonus to the check equal to your Wisdom modifier (minimum of +1).\n\nIn addition, you gain proficiency in one of the following skills of your choice: Deception, Performance, or Persuasion.', 
+              'Ваши фейские качества даруют вам сверхъестественное очарование. Каждый раз, когда вы совершаете проверку Харизмы, вы получаете бонус, равный вашему модификатору Мудрости (минимум + 1).\n\nВ дополнение вы получаете владение одним из навыков по вашему выбору: Выступление, Обман или Убеждение.', 
+              3,
+              'Add WIS mod to CHA checks. Gain skill.',
+              'Добавить мод. МУД к проверкам ХАР. Получить навык.',
+              'TCE'
+            ),
+            f('beguiling_twist', 
+              'Beguiling Twist', 
+              'Заманивающий трюк', 
+              'The magic of the Feywild guards your mind. You have advantage on saving throws against being charmed or frightened.\n\nIn addition, whenever you or a creature you can see within 120 feet of you succeeds on a saving throw against being charmed or frightened, you can use your reaction to force a different creature you can see within 120 feet of you to make a Wisdom saving throw against your spell save DC. If the save fails, the target is charmed or frightened by you (your choice) for 1 minute. The target can repeat the saving throw at the end of each of its turns, ending the effect on itself on a success.', 
+              'Магия Страны Фей охраняет ваш разум. Вы совершаете с преимуществом спасброски от очарования или испуга.\n\nКроме того, каждый раз, когда вы или существо, которое вы можете видеть в пределах 120 футов, преуспеваете в спасброске от очарования или испуга, вы можете реакцией заставить другое существо, которое вы можете видеть в пределах 120 футов, совершить спасбросок Мудрости против Сл ваших заклинаний. В случае провала цель становится очарованной или испуганной вами (по вашему выбору) на 1 минуту. Существо может повторять спасбросок в конце каждого своего хода, оканчивая на себе эффект при успехе.', 
+              7,
+              'Adv vs Charm/Fright. Reaction to Charm/Frighten others on save success.',
+              'Преим. против Очар/Испуга. Реакция Очаровать/Напугать при успехе спаса.',
+              'TCE'
+            ),
+            f('fey_reinforcements', 
+              'Fey Reinforcements', 
+              'Подкрепление фей', 
+              'The royal courts of the Feywild have blessed you with the assistance of fey beings: you know the Summon Fey spell. It doesn\'t count against the number of ranger spells you know, and you can cast it without a material component. You can also cast it once without a spell slot, and you regain the ability to do so when you finish a long rest.\n\nWhenever you start casting the spell, you can modify it so that it doesn\'t require concentration. If you do so, the spell\'s duration becomes 1 minute for that casting.', 
+              'Королевские дворы Страны Фей благословили вас за помощь фейским созданиям, и теперь вам известно заклинание призыв духа феи [summon fey]. Это заклинание не учитывается в общем количестве заклинаний следопыта, которые вам известны, и вы можете накладывать его без материальных компонентов. Вы также можете наложить его один раз без использования ячеек заклинаний, и вы восстанавливаете эту способность после окончания продолжительного отдыха.\n\nКаждый раз, когда вы начинаете накладывать это заклинание, вы можете изменить его так, чтобы оно не требовало концентрации. Если вы решите это сделать, то его продолжительность составляет 1 минуту.', 
+              11,
+              'Cast Summon Fey without material comp (1 free/long rest). Can remove Concentration (1 min duration).',
+              'Призыв духа феи без компонентов (1 раз б/п в долгий отдых). Можно убрать концентрацию (длит. 1 мин).',
+              'TCE'
+            ),
+            f('misty_wanderer', 
+              'Misty Wanderer', 
+              'Туманный странник', 
+              'You can slip in and out of the Feywild to move in a blink: you can cast Misty Step without expending a spell slot. You can do so a number of times equal to your Wisdom modifier (minimum of once), and you regain all expended uses when you finish a long rest.\n\nIn addition, whenever you cast Misty Step, you can bring along one willing creature you can see within 5 feet of you. That creature teleports to an unoccupied space of your choice within 5 feet of your destination space.', 
+              'Вы можете проскользнуть в Страну Фей и выйти из неё, чтобы переместиться за мгновение ока: вы можете накладывать туманный шаг [misty step] без затрат ячеек заклинаний. Вы можете сделать это количество раз, равное вашему модификатору Мудрости (минимум один раз), и восстанавливаете все потраченные применения после окончания продолжительного отдыха.\n\nКроме того, каждый раз, когда вы используете туманный шаг [misty step], вы можете взять с собой одно согласное существо, которое можете видеть в пределах 5 футов. Это существо телепортируется в свободное пространство по вашему выбору в пределах 5 футов от места назначения.', 
+              15,
+              'Cast Misty Step (Wis mod/long rest). Can bring ally.',
+              'Туманный шаг (МУД раз/долгий отдых). Можно взять союзника.',
+              'TCE'
+            )
+        ], 'TCE'),
+
+        // 7. Swarmkeeper (TCoE)
+        sc('swarmkeeper', 'Swarmkeeper', 'Хранитель Роя', [
+            f('gathered_swarm', 
+              'Gathered Swarm', 
+              'Собранный рой', 
+              'A swarm of intangible nature spirits has bonded itself to you and can assist you in battle. While you\'re alive, the swarm remains in your space, crawling on you or flying and skittering around you within your space. You determine its appearance, or you generate its appearance by rolling on the Swarm Appearance table.\n\nOnce on each of your turns, you can cause the swarm to assist you in one of the following ways, immediately after you hit a creature with an attack:\n• The attack\'s target takes 1d6 piercing damage from the swarm.\n• The attack\'s target must succeed on a Strength saving throw against your spell save DC or be moved by the swarm up to 15 feet horizontally in a direction of your choice.\n• You are moved by the swarm 5 feet horizontally in a direction of your choice.', 
+              'Рой бестелесных духов природы связал себя с вами и может помогать вам в сражениях. Пока вы живы, рой остается в пределах занимаемого вами пространства, ползая по вам, летая вокруг вас, пробиваясь через вашу одежду или проносясь на большой скорости рядом с вами. Вы определяете его внешний вид самостоятельно или с помощью броска по таблице «Внешний вид роя».\n\nОдин раз в каждый свой ход вы можете призвать рой помочь вам одним из следующих способов сразу же после того, как вы попадёте по существу атакой:\n• Цель атаки получает 1к6 колющего урона от роя.\n• Цель атаки должна преуспеть в cпасброске Силы против Сл ваших заклинаний, иначе будет перемещена роем на 15 футов по горизонтали в направлении по вашему выбору.\n• Рой перемещает вас на 5 футов по горизонтали в направлении по вашему выбору.', 
+              3,
+              'On hit: +1d6 dmg OR move enemy 15ft OR move self 5ft.',
+              'При попадании: +1к6 урона ИЛИ переместить врага на 15 футов ИЛИ переместить себя на 5 футов.'
+            ),
+            f('swarmkeeper_magic',
+              'Swarmkeeper Magic',
+              'Магия хранителя роя',
+              'You learn the Mage Hand cantrip if you don\'t already know it. When you cast it, the hand takes the form of your swarming nature spirits.\n\nYou also learn an additional spell of 1st level or higher when you reach certain levels in this class, as shown in the Swarmkeeper Spells table. Each spell counts as a ranger spell for you, but it doesn\'t count against the number of ranger spells you know.\n\n3rd: Faerie Fire, Mage Hand\n5th: Web\n9th: Gaseous Form\n13th: Arcane Eye\n17th: Insect Plague',
+              'Вы изучаете заговор волшебная рука [mage hand], если не знали его до этого. Когда вы накладываете это заклинание, волшебная рука выглядит как рой духов природы.\n\nВы также изучаете дополнительное заклинание 1-го уровня или выше, когда достигаете определённых уровней в этом классе, как показано в таблице «Заклинания хранителя роя». Для вас они считаются заклинаниями следопыта, однако они не учитываются в общем количестве заклинаний, которые вы знаете.\n\n3-й: волшебная рука [mage hand], огонь фей [faerie fire]\n5-й: паутина [web]\n9-й: газообразная форма [gaseous form]\n13-й: магический глаз [arcane eye]\n17-й: нашествие насекомых [insect plague]',
+              3,
+              'Learn Mage Hand and specific spells at levels 3, 5, 9, 13, 17.',
+              'Волшебная рука и спец. заклинания на 3, 5, 9, 13, 17 ур.',
+              'TCE'
+            ),
+            f('writhing_tide', 
+              'Writhing Tide', 
+              'Извивающаяся волна', 
+              'You can condense part of your swarm into a focused mass that lifts you up. As a bonus action, you gain a flying speed of 10 feet and can hover. This effect lasts for 1 minute or until you are incapacitated. You can use this feature a number of times equal to your proficiency bonus, and you regain all expended uses when you finish a long rest.', 
+              'Вы можете сделать так, чтобы часть вашего роя стала плотной массой, которая может поднимать вас вверх. Бонусным действием вы можете получить скорость полёта 10 футов и возможность парить. Этот эффект длится в течение 1 минуты или до тех пор, пока вы не станете недееспособным. Вы можете использовать это умение количество раз, равное вашему бонусу мастерства. Вы восстанавливаете все потраченные использования после окончания продолжительного отдыха.', 
+              7,
+              'BA: Fly 10ft & Hover for 1 min (PB/long rest).',
+              'Бонусное действие: Скорость полёта 10 футов и Парение на 1 минуту (Бонус мастерства/долгий отдых).',
+              'TCE'
+            ),
+            f('mighty_swarm', 
+              'Mighty Swarm', 
+              'Могущественный рой', 
+              'Your Gathered Swarm grows stronger in the following ways:\n• The damage of Gathered Swarm increases to 1d8.\n• If a creature fails its saving throw against being moved by Gathered Swarm, you can also cause the swarm to knock the creature prone.\n• When you are moved by Gathered Swarm, it gives you half cover until the start of your next turn.', 
+              'Ваше умение «Собранный рой» получает следующие усиления:\n• Урон роя увеличивается до 1к8.\n• Если существо проваливает спасбросок против перемещения «Собранным роем», вы также можете приказать рою сбить с ног это существо.\n• Когда вы перемещаетесь «Собранным роем», он даёт вам половину укрытия до начала вашего следующего хода.', 
+              11,
+              'Swarm dmg 1d8. Move effect knocks prone. Self-move gives half cover.',
+              'Урон роя 1к8. Перемещение сбивает с ног. Перемещение себя дает укрытие на половину.',
+              'TCE'
+            ),
+            f('swarming_dispersal', 
+              'Swarming Dispersal', 
+              'Растворение в рое', 
+              'You can discorporate into your swarm, avoiding danger. When you take damage, you can use your reaction to give yourself resistance to that damage. You then vanish into your swarm and then teleport to an unoccupied space that you can see within 30 feet of you, where you reappear with the swarm. You can use this feature a number of times equal to your proficiency bonus, and you regain all expended uses when you finish a long rest.', 
+              'Вы можете раствориться в своём рое, избегая опасности. Когда вы получаете урон, вы можете реакцией получить сопротивление этому урону. Вы растворяетесь в своем рое, а затем телепортируетесь в свободное пространство, которое можете видеть в пределах 30 футов, где вы вновь появляетесь вместе со своим роем. Вы можете использовать это умение количество раз, равное вашему бонусу мастерства. Вы восстанавливаете все потраченные использования после окончания продолжительного отдыха.', 
+              15,
+              'Reaction: Resistance to dmg + Teleport 30ft (PB/long rest).',
+              'Реакция: Сопротивление урону и телепортация на 30 футов (Бонус мастерства/долгий отдых).',
+              'TCE'
+            )
+        ], 'TCE'),
+        
+        // 8. Drakewarden (FToD)
+        sc('drakewarden', 'Drakewarden', 'Драконий Смотритель', [
+             f('draconic_gift', 
+               'Draconic Gift', 
+               'Драконий дар', 
+               'The bond you share with your drake creates a connection to dragonkind, granting you understanding and empowering your presence. You learn the Thaumaturgy cantrip and the Draconic language.', 
+               'Связь, которую вы делите со своим драконом, создаёт соединение с драконьим родом, даруя вам понимание и усиливая ваше присутствие. Вы изучаете заговор Чудотворство и Драконьий язык.', 
+               3,
+               'Learn Thaumaturgy and Draconic.',
+               'Изучить Чудотворство и Драконий язык.',
+               'FTD'
+             ),
+             f('drake_companion', 
+               'Drake Companion', 
+               'Спутник-дракон', 
+               'As an action, you can magically summon the drake that is bound to you. It appears in an unoccupied space of your choice within 30 feet of you. The drake is friendly to you and your companions, and it obeys your commands. In combat, the drake shares your initiative count, but it takes its turn immediately after yours. It can move and use its reaction on its own, but the only action it takes on its turn is the Dodge action, unless you take a bonus action on your turn to command it to take another action.', 
+               'Действием вы можете магически призвать дракона, связанного с вами. Он появляется в свободном пространстве по вашему выбору в пределах 30 футов от вас. Дракон дружелюбен к вам и вашим спутникам и подчиняется вашим командам. В бою дракон делит с вами инициативу, но ходит сразу после вас. Он может перемещаться и использовать реакции самостоятельно, но единственное действие, которое он совершает в свой ход — это Уклонение, если только вы не потратите бонусное действие, чтобы скомандовать ему совершить другое действие.', 
+               3,
+               'Summon Drake. BA command to act.',
+               'Призыв Дракона. БД команда на действие.',
+               'FTD'
+             ),
+             f('bond_of_fang_and_scale', 
+               'Bond of Fang and Scale', 
+               'Узы клыка и чешуи', 
+               'At 7th level, the bond you share with your drake intensifies, protecting you and stoking the drake\'s fury. While your drake is summoned, you and the drake gain resistance to the damage type determined by the drake\'s Draconic Essence. In addition, the drake gains a flying speed equal to its walking speed and can use it to carry you (if you are Medium or smaller). Also, the drake\'s bite attack deals an extra 1d6 damage of the type chosen for its Draconic Essence.', 
+               'На 7-м уровне связь с вашим драконом усиливается, защищая вас и разжигая ярость дракона. Пока ваш дракон призван, вы и дракон получаете сопротивление типу урона, определённому Драконьей Сущностью дракона. Кроме того, дракон получает скорость полёта, равную его скорости ходьбы, и может использовать её, чтобы нести вас. Также укус дракона наносит дополнительно 1к6 урона типа, выбранного для его Драконьей Сущности.', 
+               7,
+               'Resistance (Essence). Drake flies & carries you. Bite +1d6.',
+               'Сопротивление (Сущность). Дракон летает и возит вас. Укус +1к6.',
+               'FTD'
+             ),
+             f('drakes_breath', 
+               'Drake\'s Breath', 
+               'Дыхание дракона', 
+               'At 11th level, as an action, you can exhale a 30-foot cone of damaging breath or cause your drake to exhale it. Choose acid, cold, fire, lightning, or poison damage (your choice doesn\'t have to match your drake\'s Draconic Essence). Each creature in the cone must make a Dexterity saving throw against your spell save DC, taking 8d6 damage on a failed save, or half as much damage on a successful one. This damage increases to 10d6 at 15th level. Once you use this feature, you can\'t use it again until you finish a long rest, unless you expend a spell slot of 3rd level or higher to use it again.', 
+               'На 11-м уровне вы можете действием выдохнуть 30-футовый конус разрушительного дыхания или заставить своего дракона выдохнуть его. Выберите урон кислотой, холодом, огнём, электричеством или ядом. Каждое существо в конусе должно совершить спасбросок Ловкости против вашей Сл спасброска заклинаний, получая 8к6 урона при провале или половину при успехе. Этот урон увеличивается до 10к6 на 15-м уровне. Использовав это умение, вы не можете использовать его снова, пока не закончите длительный отдых, если только не потратите ячейку заклинаний 3-го уровня или выше.', 
+               11,
+               'Breath weapon 8d6 (10d6 at 15th). 1/long rest or spell slot.',
+               'Дыхание 8к6 (10к6 на 15-м). 1/долгий отдых или ячейка.',
+               'FTD'
+             ),
+             f('perfected_bond', 
+               'Perfected Bond', 
+               'Совершенные узы', 
+               'At 15th level, your bond to your drake reaches the pinnacle of its power. While your drake is summoned, you and the drake gain resistance to one damage type of your choice (acid, cold, fire, lightning, or poison), chosen when you summon it. The drake\'s bite attack deals an extra 2d6 damage (for a total of 2d6 extra damage) of the type chosen for its Draconic Essence. Also, when either you or your drake takes damage while you\'re within 30 feet of each other, you can use your reaction to give yourself or the drake resistance to that instance of damage.', 
+               'На 15-м уровне ваша связь с драконом достигает пика силы. Пока ваш дракон призван, его укус наносит дополнительно 2к6 урона (всего +2к6) типа Драконьей Сущности. Кроме того, когда вы или ваш дракон получаете урон, находясь в пределах 30 футов друг от друга, вы можете реакцией дать себе или дракону сопротивление этому случаю урона.', 
+               15,
+               'Drake size Large. Bite +2d6. Reaction resistance when near drake.',
+               'Дракон Большой. Укус +2к6. Реакция сопротивления, если рядом с драконом.',
+               'FTD'
+             )
+        ], 'FTD')
+    ] 
+};
+
+export const RANGER_ARCHETYPE_SPELLS: Record<string, string[]> = {
+    'gloom_stalker': ['Disguise Self', 'Rope Trick', 'Fear', 'Greater Invisibility', 'Seeming'],
+    'horizon_walker': ['Protection from Evil and Good', 'Misty Step', 'Haste', 'Banishment', 'Teleportation Circle'],
+    'monster_slayer': ['Protection from Evil and Good', 'Zone of Truth', 'Magic Circle', 'Banishment', 'Hold Monster'],
+    'fey_wanderer': ['Charm Person', 'Misty Step', 'Dispel Magic', 'Dimension Door', 'Mislead'],
+    'swarmkeeper': ['Faerie Fire', 'Mage Hand', 'Web', 'Gaseous Form', 'Arcane Eye', 'Insect Plague'],
+    'drakewarden': ['Thaumaturgy'],
+    'hunter': [],
+    'beast_master': []
+};
