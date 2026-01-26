@@ -479,6 +479,7 @@
 	  </trait>
     <skills>Внимательность, Проницательность</skills>
     <languages>langSelector[1]</languages>
+	<tools>toolSelector[1]</tools>
     <source>SCAG</source>
 
 	<table name="Откуда вы?">
