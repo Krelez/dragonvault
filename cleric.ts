@@ -524,8 +524,7 @@ export const CLERIC: ClassData = {
               '1st Level: Command, Heroism\n3rd Level: Hold Person, Zone of Truth\n5th Level: Mass Healing Word, Slow\n7th Level: Compulsion, Locate Creature\n9th Level: Commune, Dominate Person', 
               '1-й уровень: Героизм, Приказ\n3-й уровень: Область истины, Удержание личности\n5-й уровень: Замедление, Множественное лечащее слово\n7-й уровень: Поиск существа, Принуждение\n9-й уровень: Общение, Подчинение личности', 
               1,
-              'Cleric level 1: Command, Heroism. Level 3: Hold Person, Zone of Truth. Level 5: Mass Healing Word, Slow. Level 7: Compulsion, Locate Creature. Level 9: Commune, Dominate Person.',
-              '1-й уровень: Героизм, Приказ. 3-й: Область истины, Удержание личности. 5-й: Замедление, Множественное лечащее слово. 7-й: Поиск существа, Принуждение. 9-й: Общение, Подчинение личности.'
+              
             ),
             
             f('bonus_proficiencies_order', 
@@ -534,8 +533,7 @@ export const CLERIC: ClassData = {
               'You gain proficiency with heavy armor. You also gain proficiency in the Intimidation or Persuasion skill (your choice).', 
               'Вы получаете владение тяжёлыми доспехами и навыком Запугивание или Убеждение.', 
               1,
-              'Heavy Armor. Intimidation or Persuasion skill.',
-              'Тяжелые доспехи. Навык Запугивание или Убеждение.'
+              
             ),
 
             f('voice_of_authority', 
@@ -574,8 +572,7 @@ export const CLERIC: ClassData = {
               'You gain the ability to infuse your weapon strikes with divine energy. Once on each of your turns when you hit a creature with a weapon attack, you can cause the attack to deal an extra 1d8 psychic damage to the target. When you reach 14th level, the extra damage increases to 2d8.', 
               'Вы получаете способность наделять удары своего оружия божественной энергией. Один раз в каждый свой ход, когда вы попадаете по существу атакой оружием, вы можете дополнительно нанести цели 1к8 урона психической энергией. Когда вы достигаете 14-го уровня, этот урон увеличивается до 2к8.', 
               8,
-              'Once per turn, weapon attacks deal an extra 1d8 psychic damage (2d8 at 14th level).',
-              'Один раз в ход атаки оружием наносят дополнительно 1к8 урона психической энергией (2к8 на 14-м уровне).'
+              
             ),
 
             f('orders_wrath', 
@@ -636,7 +633,7 @@ export const CLERIC: ClassData = {
               'Могущественное колдовство', 
               'You add your Wisdom modifier to the damage you deal with any cleric cantrip.', 
               'Вы добавляете свой модификатор Мудрости к урону, который наносите любыми заговорами жреца.', 
-              8
+              8,
             ),
             
             f('expansive_bond', 
@@ -655,8 +652,7 @@ export const CLERIC: ClassData = {
               'Lvl 1: Faerie Fire, Sleep\nLvl 3: Moonbeam, See Invisibility\nLvl 5: Aura of Vitality, Leomund\'s Tiny Hut\nLvl 7: Aura of Life, Greater Invisibility\nLvl 9: Circle of Power, Mislead', 
               'Ур 1: огонь фей, усыпление\nУр 3: лунный луч, видение невидимого\nУр 5: аура живучести, Леомундова хижина\nУр 7: аура жизни, высшая невидимость\nУр 9: круг силы, фальшивый двойник', 
               1,
-              'Cleric level 1: Faerie Fire, Sleep. Level 3: Moonbeam, See Invisibility. Level 5: Aura of Vitality, Leomund\'s Tiny Hut. Level 7: Aura of Life, Greater Invisibility. Level 9: Circle of Power, Mislead.',
-              '1-й уровень: огонь фей, усыпление. 3-й: лунный луч, видение невидимого. 5-й: аура живучести, Леомундова хижина. 7-й: аура жизни, высшая невидимость. 9-й: круг силы, фальшивый двойник.'
+              
             ),
             f('bonus_proficiencies_twilight', 'Bonus Proficiencies', 'Бонусное владение', 
               'You gain proficiency with martial weapons and heavy armor.', 
