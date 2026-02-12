@@ -1802,7 +1802,7 @@
 Узы
 
 Изъяны</text>
-    <skills>Slt, Скрытность</skills>
+    <skills>Ловкость рук, Скрытность</skills>
     <tools>Воровские инструменты, Disg</tools>
     <source>PHB</source>
     <table name="Свойства личности">
@@ -2106,7 +2106,7 @@
 Узы
 
 Изъян</text>
-    <skills>Slt, Обман</skills>
+    <skills>Ловкость рук, Обман</skills>
     <tools>Disg, Forg</tools>
     <source>PHB</source>
     <table name="Афёры">
