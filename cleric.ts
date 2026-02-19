@@ -468,9 +468,7 @@ export const CLERIC: ClassData = {
               'Lvl 1: Bane, False Life\nLvl 3: Gentle Repose, Ray of Enfeeblement\nLvl 5: Revivify, Vampiric Touch\nLvl 7: Blight, Death Ward\nLvl 9: Antilife Shell, Raise Dead', 
               'Ур 1: Порча, Псевдожизнь\nУр 3: Нетленные останки, Луч слабости\nУр 5: Возрождение, Прикосновение вампира\nУр 7: Усыхание, Защита от смерти\nУр 9: Преграда жизни, Оживление', 
               1,
-              /*'Cleric level 1: Bane, False Life. Level 3: Gentle Repose, Ray of Enfeeblement. Level 5: Revivify, Vampiric Touch. Level 7: Blight, Death Ward. Level 9: Antilife Shell, Raise Dead.',
-              '1-й уровень: Порча, Псевдожизнь. 3-й: Нетленные останки, Луч слабости. 5-й: Возрождение, Прикосновение вампира. 7-й: Усыхание, Защита от смерти. 9-й: Преграда жизни, Оживление.'
-            )*/,
+             
             f('circle_of_mortality', 'Circle of Mortality', 'Круг смерти', 
               'At 1st level, you gain the ability to manipulate the line between life and death. When you would normally roll one or more dice to restore hit points with a spell to a creature at 0 hit points, you instead use the highest number possible for each die.\n\nIn addition, you learn the Spare the Dying cantrip, which doesn\'t count against the number of cleric cantrips you know. For you, it has a range of 30 feet, and you can cast it as a bonus action.', 
               'Вы получаете возможность управлять гранью между жизнью и смертью. Если обычно вы должны бросить одну или несколько костей, чтобы заклинанием восстановить хиты существу с 0 хитов, то вместо этого вы используете максимально возможное число, для каждой кости.\n\nКроме того, вы изучаете заговор уход за умирающим [spare the dying], который не учитывается при подсчёте известных вам заговоров жреца. Для вас он имеет дистанцию 30 футов, и вы можете накладывать его бонусным действием.', 
