@@ -467,7 +467,8 @@ export const CLERIC: ClassData = {
             f('domain_spells_grave', 'Domain Spells', 'Заклинания домена', 
               'Lvl 1: Bane, False Life\nLvl 3: Gentle Repose, Ray of Enfeeblement\nLvl 5: Revivify, Vampiric Touch\nLvl 7: Blight, Death Ward\nLvl 9: Antilife Shell, Raise Dead', 
               'Ур 1: Порча, Псевдожизнь\nУр 3: Нетленные останки, Луч слабости\nУр 5: Возрождение, Прикосновение вампира\nУр 7: Усыхание, Защита от смерти\nУр 9: Преграда жизни, Оживление', 
-              1,
+              1
+             ),
              
             f('circle_of_mortality', 'Circle of Mortality', 'Круг смерти', 
               'At 1st level, you gain the ability to manipulate the line between life and death. When you would normally roll one or more dice to restore hit points with a spell to a creature at 0 hit points, you instead use the highest number possible for each die.\n\nIn addition, you learn the Spare the Dying cantrip, which doesn\'t count against the number of cleric cantrips you know. For you, it has a range of 30 feet, and you can cast it as a bonus action.', 
