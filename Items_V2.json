@@ -100,7 +100,7 @@
     "Price": "0 gp",
     "Weight": "6 lb",
     "Reach": "5 фт.",
-    "Damage": "2d4+1+@mod",
+    "Damage": "2d4+1+@mod+@CON",
     "DamageType": "Рубящий",
     "WeaponCategory": "Воинское рукопашное",
     "BaseItem": "",
