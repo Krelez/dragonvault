@@ -1,3 +1,6 @@
+// ⚠️ AUTO-GENERATED from https://raw.githubusercontent.com/Krelez/dragonvault/main/druid.ts
+// Do not edit directly.
+
 
 import { ClassData } from '../../types';
 import { f, sc } from '../dataHelpers';
