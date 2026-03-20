@@ -970,7 +970,7 @@
 
 Свойства личности</text>
     <skills>Выживание, Запугивание</skills>
-    <languages>Великаний</languages>
+    <languages>Великаний, langSelector[1]</languages>
     <source>BGG</source>
   </background>
   <background>
